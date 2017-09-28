@@ -5,12 +5,13 @@
 #MY_PATH="`dirname \"$0\"`"
 #echo "$MY_PATH"
 
-STOP=false
+STOP="false"
 # Deberian venir seteadas de algun lado
 DIRABUS="pruebas_daemon/dirabus"
 DIRACCEPTED="../files_accepted"
 DIRREJECTED="../files_rejected"
 
+# Se obtiene de a un archivo por vez
 getFile()
 {
 	FILE="$(find $DIRABUS -type f -print -quit)"
@@ -22,7 +23,7 @@ verifyFile()
 	VERIFIED="$(echo $FILE | sed "/[\/ ][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][01][0-9][0123][0-9].txt/c\true")"
 }
 
-while [ "$STOP" = false ]; do
+while [ "$STOP" = "false" ]; do
 	getFile
 	while [ "$FILE" != "" ]; do
 		verifyFile
