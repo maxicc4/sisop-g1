@@ -6,16 +6,36 @@
 #echo "$MY_PATH"
 
 STOP=false
-DIRABUS="pruebas_daemon/dirabus"  # Deberian venir seteada de algun lado
+# Deberian venir seteadas de algun lado
+DIRABUS="pruebas_daemon/dirabus"
+DIRACCEPTED="../files_accepted"
+DIRREJECTED="../files_rejected"
+
+getFile()
+{
+	FILE="$(find $DIRABUS -type f -print -quit)"
+}
+
+verifyFile()
+{
+	VERIFIED="false"
+	VERIFIED="$(echo $FILE | sed "/[\/ ][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][01][0-9][0123][0-9].txt/c\true")"
+}
 
 while [ "$STOP" = false ]; do
-	FILE="$(find $DIRABUS -name '[0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][01][0-9][0123][0-9].txt' -print -quit)"
-	if [ "$FILE" != "" ]; then
-		echo "Archivo encontrado: $FILE"
-		mv $FILE pruebas_daemon/aceptados
-	else
-		echo "No se encontro ningun archivo"
-	fi
+	getFile
+	while [ "$FILE" != "" ]; do
+		verifyFile
+		if [ $VERIFIED = "true" ]; then
+			echo "Archivo aceptado: $FILE"
+			mv $FILE $DIRACCEPTED
+		else
+			echo "Archivo rechazado: $FILE"
+			mv $FILE $DIRREJECTED
+		fi
+		getFile
+	done
+	echo "No se encontro ningun archivo"
 
 	sleep 3
 done
