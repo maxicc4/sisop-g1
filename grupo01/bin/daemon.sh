@@ -9,9 +9,11 @@
 DIRABUS="pruebas_daemon/dirabus"
 DIRACCEPTED="../files_accepted"
 DIRREJECTED="../files_rejected"
+MASTERFILES="../master_files"
 
 STOP="false"
 CYCLE=0
+BANKENTITIES="$(cut -d';' -f1 "$MASTERFILES/bamae")"
 
 # Se obtiene de a un archivo por vez
 getFile()
@@ -67,6 +69,17 @@ verifyRegularFile()
 	fi
 }
 
+verifyEntityExistsInMaster()
+{
+	ENTITY="$(echo -n $FILE | tail -c -16 | cut -c-3)"
+	RESULT="$(echo $BANKENTITIES | grep $ENTITY)"
+	if [ "$RESULT" != "" ]; then
+		VERIFIED="true"
+	else
+		VERIFIED="false"
+	fi
+}
+
 while [ "$STOP" = "false" ]; do
 	CYCLE=$((CYCLE+1))
 	echo "------LOG------ Ciclo Numero $CYCLE"
@@ -87,18 +100,24 @@ while [ "$STOP" = "false" ]; do
 					echo "------LOG------ Novedad rechazada $FILE: Fecha adelantada"
 					mv $FILE $DIRREJECTED
 				else
-					verifyEmptyFile
+					verifyEntityExistsInMaster
 					if [ $VERIFIED = "false" ]; then
-						echo "------LOG------ Novedad rechazada $FILE: Archivo vacio"
+						echo "------LOG------ Novedad rechazada $FILE: Entidad inexistente"
 						mv $FILE $DIRREJECTED
 					else
-						verifyRegularFile
+						verifyEmptyFile
 						if [ $VERIFIED = "false" ]; then
-							echo "------LOG------ Novedad rechazada $FILE: Tipo de archivo invalido"
+							echo "------LOG------ Novedad rechazada $FILE: Archivo vacio"
 							mv $FILE $DIRREJECTED
 						else
-							echo "------LOG------ Novedad aceptada $FILE"
-							mv $FILE $DIRACCEPTED
+							verifyRegularFile
+							if [ $VERIFIED = "false" ]; then
+								echo "------LOG------ Novedad rechazada $FILE: Tipo de archivo invalido"
+								mv $FILE $DIRREJECTED
+							else
+								echo "------LOG------ Novedad aceptada $FILE"
+								mv $FILE $DIRACCEPTED
+							fi
 						fi
 					fi
 				fi
