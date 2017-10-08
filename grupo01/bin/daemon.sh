@@ -9,11 +9,12 @@
 DIRABUS="pruebas_daemon/dirabus"
 DIRACCEPTED="../files_accepted"
 DIRREJECTED="../files_rejected"
-MASTERFILES="../master_files"
+DIRMASTERFILES="../master_files"
 
 STOP="false"
 CYCLE=0
-BANKENTITIES="$(cut -d';' -f1 "$MASTERFILES/bamae")"
+BANKENTITIES="$(cut -d';' -f1 "$DIRMASTERFILES/bamae")"
+VALIDATORID=""
 
 # Se obtiene de a un archivo por vez
 getFile()
@@ -80,6 +81,14 @@ verifyEntityExistsInMaster()
 	fi
 }
 
+runValidator()
+{
+	# Cambiar despues por el nombre o ubicacion del validador
+	validador &
+	VALIDATORID=$!
+	echo "------LOG------ Validador invocado: process id $VALIDATORID"
+}
+
 while [ "$STOP" = "false" ]; do
 	CYCLE=$((CYCLE+1))
 	echo "------LOG------ Ciclo Numero $CYCLE"
@@ -126,6 +135,21 @@ while [ "$STOP" = "false" ]; do
 
 		getFile
 	done
+
+	: ' Lo comento por ahora hasta que este el validador
+	if [ "$(ls -A $DIRACCEPTED)" ]; then
+		# La primera vez entra aca
+		if [ "$VALIDATORID" = "" ]; then
+			runValidator
+		else
+			if [ "$(ps -q $VALIDATORID -o comm=)" ]; then
+				echo "------LOG------ Invocacion del Validador pospuesta para el siguiente ciclo"
+			else
+				runValidator
+			fi
+		fi
+	fi
+	'
 
 	sleep 3
 done
