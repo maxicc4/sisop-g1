@@ -1,0 +1,24 @@
+2017/10/08 23:29:58 - Ciclo Numero 1
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/0003_20170925.txt>: Nombre de archivo invalido
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20170916.txt>: Archivo vacio
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20170925.txt>: Archivo vacio
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/123_20171223.txt>: Fecha adelantada
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/123_20170823>: Nombre de archivo invalido
+2017/10/08 23:29:58 - Novedad aceptada <pruebas_daemon/dirabus/016_20171008.txt>
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20020819.txt>: Tipo de archivo invalido
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20170231.txt>: Fecha invalida
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/fdfd.txt>: Nombre de archivo invalido
+2017/10/08 23:29:58 - Novedad aceptada <pruebas_daemon/dirabus/087_20170823.txt>
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/083_20170823.txt>: Entidad inexistente
+2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/123_20170823.txt>: Entidad inexistente
+2017/10/08 23:30:01 - Ciclo Numero 2
+2017/10/08 23:30:04 - Ciclo Numero 3
+2017/10/08 23:30:07 - Ciclo Numero 4
+2017/10/08 23:30:10 - Ciclo Numero 5
+2017/10/08 23:30:13 - Ciclo Numero 6
+2017/10/08 23:30:17 - Ciclo Numero 7
+2017/10/08 23:30:20 - Ciclo Numero 8
+2017/10/08 23:30:23 - Ciclo Numero 9
+2017/10/08 23:30:26 - Ciclo Numero 10
+2017/10/08 23:30:29 - Ciclo Numero 11
+2017/10/08 23:30:32 - Ciclo Numero 12

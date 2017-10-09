@@ -10,9 +10,11 @@ DIRABUS="pruebas_daemon/dirabus"
 DIRACCEPTED="../files_accepted"
 DIRREJECTED="../files_rejected"
 DIRMASTERFILES="../master_files"
+DIRLOGS="../logs"
 
 STOP="false"
 CYCLE=0
+COUNTERTRUNCATELOG=0
 BANKENTITIES="$(cut -d';' -f1 "$DIRMASTERFILES/bamae")"
 VALIDATORID=""
 
@@ -81,51 +83,63 @@ verifyEntityExistsInMaster()
 	fi
 }
 
+writeLog()
+{
+	CURRENTDATE="$(date "+%Y/%m/%d %H:%M:%S")"
+	echo "$CURRENTDATE - $1" >> "$DIRLOGS/demonio.log"
+}
+
 runValidator()
 {
 	# Cambiar despues por el nombre o ubicacion del validador
 	validador &
 	VALIDATORID=$!
-	echo "------LOG------ Validador invocado: process id $VALIDATORID"
+	writeLog "Validador invocado: process id $VALIDATORID"
+}
+
+rejectFile()
+{
+	writeLog "Novedad rechazada <$FILE>: $1"
+	mv $FILE $DIRREJECTED
+}
+
+acceptFile()
+{
+	writeLog "Novedad aceptada <$FILE>"
+	mv $FILE $DIRACCEPTED
 }
 
 while [ "$STOP" = "false" ]; do
 	CYCLE=$((CYCLE+1))
-	echo "------LOG------ Ciclo Numero $CYCLE"
+	COUNTERTRUNCATELOG=$((COUNTERTRUNCATELOG+1))
+	writeLog "Ciclo Numero $CYCLE"
 	getFile
 	while [ "$FILE" != "" ]; do
 		verifyFormatNameFile
 		if [ $VERIFIED = "false" ]; then
-			echo "------LOG------ Novedad rechazada $FILE: Nombre de archivo invalido"
-			mv $FILE $DIRREJECTED
+			rejectFile "Nombre de archivo invalido"
 		else
 			verifyFormatDate
 			if [ $VERIFIED = "false" ]; then
-				echo "------LOG------ Novedad rechazada $FILE: Fecha invalida"
-				mv $FILE $DIRREJECTED
+				rejectFile "Fecha invalida"
 			else
 				verifyDateAgainstCurrentDate
 				if [ $VERIFIED = "false" ]; then
-					echo "------LOG------ Novedad rechazada $FILE: Fecha adelantada"
-					mv $FILE $DIRREJECTED
+					rejectFile "Fecha adelantada"
 				else
 					verifyEntityExistsInMaster
 					if [ $VERIFIED = "false" ]; then
-						echo "------LOG------ Novedad rechazada $FILE: Entidad inexistente"
-						mv $FILE $DIRREJECTED
+						rejectFile "Entidad inexistente"
 					else
 						verifyEmptyFile
 						if [ $VERIFIED = "false" ]; then
-							echo "------LOG------ Novedad rechazada $FILE: Archivo vacio"
-							mv $FILE $DIRREJECTED
+							rejectFile "Archivo vacio"
 						else
 							verifyRegularFile
 							if [ $VERIFIED = "false" ]; then
-								echo "------LOG------ Novedad rechazada $FILE: Tipo de archivo invalido"
-								mv $FILE $DIRREJECTED
+								rejectFile "Tipo de archivo invalido"
 							else
-								echo "------LOG------ Novedad aceptada $FILE"
-								mv $FILE $DIRACCEPTED
+								acceptFile
 							fi
 						fi
 					fi
@@ -142,14 +156,22 @@ while [ "$STOP" = "false" ]; do
 		if [ "$VALIDATORID" = "" ]; then
 			runValidator
 		else
+			# Si el proceso sigue corriendo
 			if [ "$(ps -q $VALIDATORID -o comm=)" ]; then
-				echo "------LOG------ Invocacion del Validador pospuesta para el siguiente ciclo"
+				writeLog "Invocacion del Validador pospuesta para el siguiente ciclo"
 			else
 				runValidator
 			fi
 		fi
 	fi
 	'
+
+	if [ $COUNTERTRUNCATELOG -ge 100 ]; then
+		tail -n50 "$DIRLOGS/demonio.log" > "$DIRLOGS/demonio2.log"
+		mv "$DIRLOGS/demonio2.log" "$DIRLOGS/demonio.log"
+		writeLog "Log truncado"
+		COUNTERTRUNCATELOG=0
+	fi
 
 	sleep 3
 done
