@@ -1,13 +1,13 @@
 #!/usr/bin/perl -X
 
-
-
 use strict;
 use warnings;
 use Fcntl qw(:flock);
-use Listador;
+use Listador_Automatico;
+use Listador_Manual;
 
-print "\nIniciando LISTADOR\n\n";
+
+print "\nIniciando LISTADOR\n";
 
 unless (flock(DATA, LOCK_EX|LOCK_NB)) {
 	print "______________________________________________________\n";
@@ -18,11 +18,11 @@ unless (flock(DATA, LOCK_EX|LOCK_NB)) {
 }
 
 if ($ARGV[0] eq '-a') {
-	Listador::automatico();
+	Listador_Automatico::automatico();
 
 }elsif ($ARGV[0] eq '-m') {
 
-	Listador::manual($ARGV[1]);
+	Listador_Manual::manual($ARGV[1]);
 }else {
 	print "El modo de ejecucion $ARGV[0] es invalido\n";
 }
