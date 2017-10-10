@@ -2,8 +2,7 @@
 
 #TODO: chequear que se haya inicializado previamente el ambiente
 
-#MY_PATH="`dirname \"$0\"`"
-#echo "$MY_PATH"
+MYPATH="$(dirname \"$0\")"
 
 # Deberian venir seteadas de algun lado
 DIRABUS="pruebas_daemon/dirabus"
@@ -97,16 +96,46 @@ runValidator()
 	writeLog "Validador invocado: process id $VALIDATORID"
 }
 
+# Basicamente es un contador que se va guardando en un archivo oculto
+getDuplicateSequence()
+{
+	if [ -e "$MYPATH/.dups_$1" ]; then
+		SEQUENCEDUP="$(head -n1 "$MYPATH/.dups_$1")"
+		echo "$SEQUENCEDUP + 1" | bc > "$MYPATH/.dups_$1"
+	else
+		SEQUENCEDUP=0
+		echo "1" > "$MYPATH/.dups_$1"
+	fi
+}
+
 rejectFile()
 {
 	writeLog "Novedad rechazada <$FILE>: $1"
-	mv $FILE $DIRREJECTED
+	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
+	if [ -e "$DIRREJECTED/$NAMEFILE" ]; then
+		if [ ! -d "$DIRREJECTED/dup" ]; then
+			mkdir "$DIRREJECTED/dup"
+		fi
+		getDuplicateSequence "files_rejected"
+		mv $FILE "$DIRREJECTED/dup/$NAMEFILE.$SEQUENCEDUP"
+	else
+		mv $FILE $DIRREJECTED
+	fi
 }
 
 acceptFile()
 {
 	writeLog "Novedad aceptada <$FILE>"
-	mv $FILE $DIRACCEPTED
+	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
+	if [ -e "$DIRACCEPTED/$NAMEFILE" ]; then
+		if [ ! -d "$DIRACCEPTED/dup" ]; then
+			mkdir "$DIRACCEPTED/dup"
+		fi
+		getDuplicateSequence "files_accepted"
+		mv $FILE "$DIRACCEPTED/dup/$NAMEFILE.$SEQUENCEDUP"
+	else
+		mv $FILE $DIRACCEPTED
+	fi
 }
 
 while [ "$STOP" = "false" ]; do
