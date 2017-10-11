@@ -56,10 +56,21 @@ Cualquier otra indicación, diagrama, cuadro que considere adecuada, por ejemplo
 
 ### Listador
 
-Puede ser invocado automáticamente por el "Validador" o manualmente con el comando:
+Es invocado automáticamente por el "Validador" a través del comando:
 
 ```
-perl listador.pl
+perl listador.pl -a
+```
+O puede ser invocado manualmente ejecutando:
+
+```
+perl listador.pl -m
 ```
 
+También se cuenta con la posibilidad de acceder a líneas de ayuda para el modo manual, agregando -m en la llamada a la funcion:
+
+
+```
+perl listador.pl -m -h
+```
 
