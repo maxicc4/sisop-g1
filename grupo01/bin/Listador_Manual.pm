@@ -12,6 +12,16 @@ sub estado_documento_cuenta {
 	return ` ./filtro_documento_cuenta_estado.sh "@_[0]" @_[1] `;
 }
 
+sub filtros_a_bash{	
+	$comando = "cat \$1 | awk '";
+	foreach $sub (@_[0]){ 
+		$comando = $comando . "/$sub/ && ";
+	}
+	$comando = substr($comando,0, -3) . "'| cut -d ';' -f2"  ;
+	open (BASH, ">", "filtra_cuentas.sh") or die $!;
+	printf BASH $comando;
+	close(BASH);
+}
 
 sub seleccion_filtros {
 	@nombre_filtros = ("Filtro por entidad", "Filtro por Fuente", "Filtro por Condición de Distribución", "Filtro por Documento de Cuenta", "Filtro por Documento de Tarjeta");
@@ -41,7 +51,6 @@ sub listado_cuentas {
 	$nombre_nuevo_reporte = Listador::obtener_nombre_nuevo_reporte("reporte");
 	open (REPORTE, ">>", $nombre_nuevo_reporte) or die $!;
 	printf REPORTE "LISTADO DE CUENTAS:\n\n";
-	
 
 	@estados_cuentas = ("ACTIVA","BAJA", "CTX", "JUD");
 	foreach $estado (@estados_cuentas) {
@@ -58,27 +67,24 @@ sub listado_cuentas {
 	print "\nReporte Situacion de Cuentas: $nombre_nuevo_reporte \n";
 	close(REPORTE);
 	
+	@substrings = ();
 	@substrings = seleccion_filtros();
 
 	$nombre_nuevo_reporte = Listador::obtener_nombre_nuevo_reporte("reporte");
 	open (REPORTE, ">>", $nombre_nuevo_reporte) or die $!;
 	printf REPORTE "LISTADO DE CUENTAS:\n\n";
-	
-	print "Filtros aplicados: ";	
-	$comando = "";
-	foreach $sub (@substrings){	
-		print $sub;
-		$comando = $comando . "grep -e $sub | ";
-	}
-	$comando = $comando ;
-	$cut =  "cut -d ';' -f2";
-	foreach $dir (@directorios){
-		print $comando . $cut;
-		print "En archivo: $dir las cuentas que pasan los filtros son: ";
-		print ` cat $dir | $comando $cut `;
-	}
 
-	
+	filtros_a_bash(@substrings);
+	foreach $dir (@directorios){
+		@cuentas = `./filtra_cuentas.sh $dir `;
+		chomp(@cuentas);
+		if (@cuentas){
+			$cuentas = join(',',@cuentas);
+			$filtros = join(',',@substrings);
+			print "En archivo: $dir - Las cuentas que pasan los filtros: $filtros - Son: $cuentas\n";
+			printf REPORTE " En archivo: $dir Las cuentas que pasaron los filtros: $filtros\n Son: $cuentas\n";
+		}
+	}
 	print "\nReporte Situacion de Cuentas: $nombre_nuevo_reporte \n";
 	close(REPORTE);
 	

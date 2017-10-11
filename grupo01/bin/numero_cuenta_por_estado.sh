@@ -3,5 +3,5 @@
 # $1 : ACTIVA, BAJA....
 # $2 : directorio
 
- grep -i -e $1 $2 | sed -e "s/.*\txt;\(.*\);$1.*/\1/"
+ grep -i -e $1 $2 | cut -d';' -f2 
 

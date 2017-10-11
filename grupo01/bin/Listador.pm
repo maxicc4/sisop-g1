@@ -1,7 +1,7 @@
 package Listador;
 use Time::Piece;
 use Time::Seconds;
-use File::Find::Rule;
+# use File::Find::Rule;
 
 
 # $directorio_validados=$ENV{'files_validated'};
