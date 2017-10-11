@@ -67,7 +67,7 @@ O puede ser invocado manualmente ejecutando:
 perl listador.pl -m
 ```
 
-También se cuenta con la posibilidad de acceder a líneas de ayuda para el modo manual, agregando -m en la llamada a la funcion:
+También se cuenta con la posibilidad de acceder a líneas de ayuda para el modo manual, agregando "-h en la llamada a la funcion:
 
 
 ```
