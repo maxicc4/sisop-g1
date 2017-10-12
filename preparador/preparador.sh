@@ -1,5 +1,6 @@
 #!/bin/sh
 readonly NOMBRE_ARCHIVO_LOG="PreparadorLog.txt"
+# readonly DIRECTORIO_BASH_PROFILE="/home/$USER/"
 
 loggear() {
 	fecha_actual=$(date '+%d/%m/%Y %H:%M:%S')
@@ -62,7 +63,8 @@ ejecutar_demonio() {
 
 	process_id=$!
 	agregar_variable_de_ambiente "process_id" $process_id
-	echo "detener_demonio(){kill $PROCESS_ID}" >> ".bash_profile"
+
+	# echo "alias detener_demonio=kill $PROCESS_ID" >> "/home/$USER/.bash_aliases"
 }
 
 # detener_demonio() {
@@ -106,7 +108,7 @@ mover_archivo_log() {
 main () {
 	loggear "main" "INFO" "Inicio del preparador"
 	
-	archivo_de_configuracion=$1
+	archivo_de_configuracion=$DIR_INSTALACION/DIRCONF/config.config
 	loggear "main" "INFO" "El archivo de configuración recibido por parametros es: '$archivo_de_configuracion'"
 	
 	verificar_configuracion_de_directorios_necesarios
