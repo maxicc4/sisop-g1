@@ -426,4 +426,5 @@ checkFiles
 #################################################################
 ##############FUNCIONES DE INSTALACION###########################
 commands $1
+chmod +x $DIR_INSTALACION/bin/*.sh
 #checkFiles
