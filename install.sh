@@ -1,3 +1,4 @@
+
 #VARIABLES DE INSTALACION
 INSTALACION_RAPIDA="";
 DIR_EJECUTABLES="ejecutables"
@@ -8,26 +9,17 @@ DIR_VALIDADOS="validados"
 DIR_REPORTES="reportes"
 DIR_LOG="log"
 DIR_CONFIG="dirconf"
-DIR_INSTALACION="grupo01"
+variable=$(pwd)
+export DIR_INSTALACION=$variable/"grupo01"
+
 #########################
 
-
-#RUTAS DE ARCHIVOS INSTALABLES.
-
-FILES_EJECUTABLES=$(pwd)/Temp/bin;
-FILES_MAESTROS=$(pwd)/Temp/master_files;
-FILES_ACEPTADOS=$(pwd)/Temp/files_accepted;
-FILES_RECHAZADOS=$(pwd)/Temp/files_rejected;
-FILES_VALIDADOS=$(pwd)/Temp/files_validated;
-FILES_REPORTES=$(pwd)/Temp/files_report;
-
-#######################################
 
 
 
 
 loguear(){
-#touch $DIR_INSTALACION/$DIR_CONF/log.txt
+
 echo "$(date +"%D %X")-$1-$2-$3-$4">>$DIR_INSTALACION/$DIR_CONFIG/Instalacion.log
 #loguear WHO WHERE WHAT WHY
 #ie 
@@ -35,7 +27,7 @@ echo "$(date +"%D %X")-$1-$2-$3-$4">>$DIR_INSTALACION/$DIR_CONFIG/Instalacion.lo
 }
 
 createConfigFile(){
-rm $DIR_INSTALACION/$DIR_CONFIG/config.txt
+#rm $DIR_INSTALACION/$DIR_CONFIG/config.txt
 echo "ejecutables-$DIR_INSTALACION/$DIR_EJECUTABLES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
 echo "maestros-$DIR_INSTALACION/$DIR_MAESTROS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
 echo "aceptados-$DIR_INSTALACION/$DIR_ACEPTADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
@@ -74,8 +66,8 @@ if [ "$1" != "" ];then
 				echo "instalacion default"
 				$INSTALACION_RAPIDA=1
 				;;
-        -r | --repair)	        echo "apreto r"
-				repararInstalacion
+        -r | --repair)	        echo "Reparacion de sistema"
+				reinstall
                                 ;;
         -h | --help )       	checkNameDirectories
 				exit
@@ -86,7 +78,7 @@ if [ "$1" != "" ];then
     esac
     shift
 else
-setup
+checkPreviousInstallation
 fi
 #done
 }
@@ -103,7 +95,7 @@ result=$(echo $(perl -e '($x,$y)=@ARGV; print $x cmp $y' $V1 $V2))
 echo "[Perl] installed version $V1"
 if [ $result == 1 ]; then
 echo "[Perl version] == OK"
-loguear "Nahuel" "Perl version" "OK" "[Perl version] == OK"
+#loguear "Nahuel" "Perl version" "OK" "[Perl version] == OK"
 return 0
 else
 loguear "Nahuel" "Perl version" "OK" "[Perl version] == ERROR  ($V2 is required)"
@@ -249,26 +241,6 @@ clear
 
 ##############################################################3
 
-installationDirectory(){
-
-echo "Indique el directorio de instalación o presione 'y' para utilizar"
-echo "el directorio actual"
-read dir_ins
-variable=$(pwd)
-
-if [ $dir_ins != 'y' ];then
-
-DIR_INSTALACION=$variable/$dir_ins/"grupo01"
-#mkdir -p $DIR_INSTALACION/$DIR_CONFIG
-#loguear "Nahuel" "installationDirectorie()" "Directorio de instalacion" "$DIR_INSTALACION"
-else 
-DIR_INSTALACION=$variable/"grupo01"
-#mkdir -p $DIR_INSTALACION/$DIR_CONFIG
-#loguear "Nahuel" "installationDirectorie()" "Directorio de instalacion (actual)" "$DIR_INSTALACION"
-
-
-fi
-}
 
 showDirectories(){
 
@@ -291,42 +263,29 @@ repararInstalacion(){
 echo "reparacion"
 }
 
-copyingFiles(){
-echo "Extrayendo archivos para la instalacion"
-echo "======================================="
-echo -ne '#####                     (33%)\r'
-sleep 1
-echo -ne '#############             (66%)\r'
-sleep 1
-echo -ne '#######################   (100%)\r'
-echo -ne '\n'
-tar -xf temp.tar
-echo "copiando archivos"
-echo "================="
-echo -ne '#####                     (33%)\r'
-sleep 1
-echo -ne '#############             (66%)\r'
-sleep 1
-echo -ne '#######################   (100%)\r'
-echo -ne '\n'
-cp -r $FILES_EJECUTABLES/. $DIR_INSTALACION/$DIR_EJECUTABLES/
-cp -r $FILES_MAESTROS/. $DIR_INSTALACION/$DIR_MAESTROS/
-cp -r $FILES_ACEPTADOS/. $DIR_INSTALACION/$DIR_ACEPTADOS/
-cp -r $FILES_RECHAZADOS/. $DIR_INSTALACION/$DIR_RECHAZADOS/
-cp -r $FILES_VALIDADOS/. $DIR_INSTALACION/$DIR_VALIDADOS/
-cp -r $FILES_REPORTES/. $DIR_INSTALACION/$DIR_REPORTES/
-echo "eliminando archivos de instalacion"
-echo "=================================="
-echo -ne '#####                     (33%)\r'
-sleep 1
-echo -ne '#############             (66%)\r'
-sleep 1
-echo -ne '#######################   (100%)\r'
-echo -ne '\n'
-rm -R Temp
+extrayendoMaestros(){
+
+tar -xf maestros.tar -C $DIR_INSTALACION
+
+}
+
+existeFile(){
+
+[ -f $1 ] && return 0 || return 1
+
 }
 
 
+checkPreviousInstallation(){
+config_file=$DIR_INSTALACION/dirconf/config.txt
+if existeFile $config_file;then
+echo "ya se encuentra una version instalada del sistema. Desea repararla?"
+repair
+else 
+setup
+fi
+
+}
 
 setup(){
 clear
@@ -338,13 +297,17 @@ echo "*******************************************************************"
 echo ""
 sleep 1
 
-installationDirectory
 
-if [ tipoDeInstalacion ];then 
-echo "Reparar"
-fi 
 
-mkdir -p $DIR_INSTALACION/$DIR_CONFIG
+#if tipoDeInstalacion;then 
+#echo "Se encuentra una version instalada del sistema. Desea reparar el sistema? (y/n)"
+#read opcion
+#if [ "$opcion" == "y" ]; then
+#reinstall
+#fi
+
+#else
+
 
 #Inicializo el log 
 loguear $USER "INSTALACION" "Inicio de instalacción" "Inicio de log correcto"
@@ -354,40 +317,30 @@ loguear $USER "INSTALACION" "Inicio de instalacción" "Inicio de log correcto"
  
 #chequeando version de perl (mayor a v5 para instalar)
 if checkPerl; then
-#directories
-#makeDirectories
 
 continuar=1
 while [ "$continuar" == 1 ]; do
  
 directories
-#makeDirectories
 showDirectories
 echo "Confirmar estrutura de directorios (y/n)"
 read confirmar
 
 	if [ $confirmar == 'y' ];then	
-	let continuar='0'
+	continuar=0
 	makeDirectories
-	else
-	directories
-	showDirectories
+	extrayendoMaestros
 	fi
 done
-
 createConfigFile
-#copiar archivos.
-copyingFiles
-
 fi
-#######################################################################################################
-
+#fi
 }
 
-tipoDeInstalacion(){
+#devuelve 0 si la carpeta existe
+existeCarpeta(){
 
-buscar=$DIR_INSTALACION/$DIR_CONFIG/Instalacion.log
-[ -f $buscar ] && return 0 || return 1
+[ -d $1 ] && return 1 || return 0
 
 }
 
@@ -401,12 +354,76 @@ fi
 
 }
 
-#reinstall(){
 
-#obtenerDirectorios
-#copyingFiles
-#}
+repair(){
+archivoConf=$DIR_INSTALACION/dirconf/config.txt
+while read lineaConf
+do
+	directorio=$(echo "$lineaConf" | cut -d '-' -f1)
+	case "$directorio" in
+		ejecutables)
+                        ejecutable=$(echo "$lineaConf" | cut -d '-' -f2)
+			echo "$ejecutable";;
+ 		maestros)
+                        maestro=$(echo "$lineaConf" | cut -d '-' -f2);;
+ 		rechazados)
+                        rechazado=$(echo "$lineaConf" | cut -d '-' -f2);;
+		aceptados)
+			acetp=$(echo "$lineaConf" | cut -d '-' -f2);;
+
+		validados) 
+			validado=$(echo "$lineaConf" | cut -d '-' -f2);;
+			
+		reportes)
+			reportes=$(echo "$lineaConf" | cut -d '-' -f2);;			
+		log)
+			log=$(echo "$lineaConf" | cut -d '-' -f2);;
+		*)
+			continue;
+	esac
+
+done < $archivoConf
+
+#checkMasterFiles
+
+if existeCarpeta $ejecutable; then
+mkdir $ejecutable
+echo "$ejecutable"
+fi
+
+if existeCarpeta $maestro; then
+mkdir $maestro
+echo "$maestro"
+fi
+
+if existeCarpeta $rechazado; then
+echo "$rechazado"
+mkdir $rechazado
+fi
+
+if existeCarpeta $validado; then
+mkdir $validado
+fi
+
+if existeCarpeta $reportes; then
+mkdir $reportes
+fi
+
+if existeCarpeta $acept; then
+mkdir $acept
+fi
+
+if existeCarpeta $log; then
+mkdir $log
+fi
+
+}
+
+reinstall(){
+checkFiles
+}
 
 #################################################################
 ##############FUNCIONES DE INSTALACION###########################
 commands $1
+#checkFiles
