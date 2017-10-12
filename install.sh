@@ -266,6 +266,7 @@ echo "reparacion"
 extrayendoMaestros(){
 
 tar -xf maestros.tar -C $DIR_INSTALACION
+tar -xf bin.tar
 
 }
 
