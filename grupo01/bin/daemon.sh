@@ -106,7 +106,7 @@ writeLog()
 runValidator()
 {
 	# Cambiar despues por el nombre o ubicacion del validador
-	validador &
+	sh "validador.sh" &
 	VALIDATORID=$!
 	writeLog "Validador invocado: process id $VALIDATORID"
 }
@@ -194,7 +194,6 @@ while [ "$STOP" = "false" ]; do
 		getFile
 	done
 
-	: ' Lo comento por ahora hasta que este el validador
 	if [ "$(ls -A $DIRACCEPTED)" ]; then
 		# La primera vez entra aca
 		if [ "$VALIDATORID" = "" ]; then
@@ -208,7 +207,6 @@ while [ "$STOP" = "false" ]; do
 			fi
 		fi
 	fi
-	'
 
 	if [ $COUNTERTRUNCATELOG -ge 100 ]; then
 		tail -n50 "$DIRLOGS/demonio.log" > "$DIRLOGS/demonio2.log"
