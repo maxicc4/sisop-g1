@@ -267,7 +267,7 @@ extrayendoMaestros(){
 
 tar -xf maestros.tar -C $DIR_INSTALACION
 tar -xf bin.tar
-
+cp -r bin/. $DIR_INSTALACION/$DIR_EJECUTABLES/
 }
 
 existeFile(){
@@ -287,7 +287,6 @@ setup
 fi
 
 }
-
 setup(){
 clear
 echo "*******************************************************************"
