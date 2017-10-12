@@ -28,13 +28,13 @@ echo "$(date +"%D %X")-$1-$2-$3-$4">>$DIR_INSTALACION/$DIR_CONFIG/Instalacion.lo
 
 createConfigFile(){
 #rm $DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "ejecutables-$DIR_INSTALACION/$DIR_EJECUTABLES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "maestros-$DIR_INSTALACION/$DIR_MAESTROS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "aceptados-$DIR_INSTALACION/$DIR_ACEPTADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "rechazados-$DIR_INSTALACION/$DIR_RECHAZADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "validados-$DIR_INSTALACION/$DIR_VALIDADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "reportes-$DIR_INSTALACION/$DIR_REPORTES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "log-$DIR_INSTALACION/$DIR_LOG-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.txt
+echo "ejecutables-$DIR_INSTALACION/$DIR_EJECUTABLES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+echo "maestros-$DIR_INSTALACION/$DIR_MAESTROS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+echo "aceptados-$DIR_INSTALACION/$DIR_ACEPTADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+echo "rechazados-$DIR_INSTALACION/$DIR_RECHAZADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+echo "validados-$DIR_INSTALACION/$DIR_VALIDADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+echo "reportes-$DIR_INSTALACION/$DIR_REPORTES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+echo "log-$DIR_INSTALACION/$DIR_LOG-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
 
 }
 
