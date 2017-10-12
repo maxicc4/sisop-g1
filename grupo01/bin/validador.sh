@@ -1,24 +1,9 @@
 DirActual=$DIR_INSTALACION #PWD
-archivoConf="$DirActual/dirconf/config"
 #Guardo las rutas de los directorios:
-while read lineaConf
-do
-	directorio=$(echo "$lineaConf" | cut -d '-' -f1)
-	case "$directorio" in
-		aceptados) 
-			acept=$(echo "$lineaConf" | cut -d '-' -f2);;
-		rechazados)
-			recha=$(echo "$lineaConf" | cut -d '-' -f2);;
-		validados)
-			valid=$(echo "$lineaConf" | cut -d '-' -f2);;
-		log)
-			log=$(echo "$lineaConf" | cut -d '-' -f2);;	
-		*)
-			continue;
-	esac
-
-done < $archivoConf
-
+acept=$ACEPTADOS
+recha=$RECHAZADOS
+valid=$VALIDADOS
+log=$LOGS
 proc="$DirActual/procesados"
 dupli="$recha/dup"
 archivolog="$log/ValidadorLog.log"
@@ -403,7 +388,10 @@ do
 done
 
 if [ $archEmitidosCreado -gt 0 ];then
-	perl listador.pl -a	
+	perl listador.pl -a
+	#Escribimos log
+	mensajeLog="Invocar a LISTADOR"
+	escribirLog "INF" "$mensajeLog"	
 fi
 
 
