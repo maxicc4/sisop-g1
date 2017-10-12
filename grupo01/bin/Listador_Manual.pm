@@ -29,7 +29,7 @@ sub filtros_a_bash{
 sub seleccion_filtros {
 	@nombre_filtros = ("Filtro por entidad", "Filtro por Fuente", "Filtro por Condición de Distribución", "Filtro por Documento de Cuenta", "Filtro por Documento de Tarjeta");
 	print "\nSeleccione uno o varios filtros a aplicar: 
-0. Filtro por entidad (una, rango de entidades, todas)
+0. Filtro por entidad
 1. Filtro por fuente (una o todas)
 2. Filtro por condición de distribución
 3. Filtro por documento cuenta
@@ -55,7 +55,7 @@ sub filtro_a_bash {
 sub seleccion_filtros_v1 {
 	@nombre_filtros = ("Filtro por entidad", "Filtro por Fuente", "Filtro por Condición de Distribución", "Filtro por Documento de Cuenta", "Filtro por Documento de Tarjeta");
 	print "\nSeleccione uno o varios filtros a aplicar: 
-0. Filtro por entidad (una, rango de entidades, todas)
+0. Filtro por entidad
 1. Filtro por fuente (una o todas)
 2. Filtro por condición de distribución
 3. Filtro por documento cuenta
@@ -66,23 +66,25 @@ sub seleccion_filtros_v1 {
 			print "\nIngrese valor de " . @nombre_filtros[$num] . " por el cual desea filtrar: ";
 			$filtro = <STDIN>;
 			$filtro = substr $filtro, 0, -1;
-			print $filtro;
+
 			if ($num == 0) {
-				$bash_command = $bash_command . "\$22=\"$filtro\" ";
+				$bash_command = $bash_command . "\$22=\"$filtro\" && ";
 			}elsif ($num == 1){
-				$bash_command = $bash_command . "\$1=\"$filtro\" ";
+				$bash_command = $bash_command . "\$1=\"$filtro\" && ";
 			}elsif ($num == 2){
-				$bash_command = $bash_command . "\$7=\"$filtro\" ";
+				$bash_command = $bash_command . "\$7=\"$filtro\" && ";
 			}elsif ($num == 3){
-				$bash_command = $bash_command . "\$18=\"$filtro\" ";
+				$bash_command = $bash_command . "\$18=\"$filtro\" && ";
 			}elsif ($num == 4){
-				$bash_command = $bash_command . "\$10=\"$filtro\" ";
+				$bash_command = $bash_command . "\$10=\"$filtro\" &&";
 			}
 		}else{
 			print "Input inválido";
 			return seleccion_filtros_v1()
 		}
 	}
+	$bash_command = substr $bash_command, 0, -3;
+
 	return $bash_command;
 }
 
@@ -212,8 +214,6 @@ sub listado_condicion_distribucion {
 	reporte_cuentas_condicion_distribucion("NO DISTRIBUIR, tarjeta VENCIDA", \@directorios, $nombre_nuevo_reporte);
 	reporte_cuentas_condicion_distribucion("DISTRIBUCION URGENTE", \@directorios, $nombre_nuevo_reporte);
 
-
-
 	
 	$nombre_nuevo_reporte = Listador::obtener_nombre_nuevo_reporte("reporte");
 	open (REPORTE, ">>", $nombre_nuevo_reporte) or die $!;
@@ -230,7 +230,7 @@ sub listado_condicion_distribucion {
 		}
 	}
 
-	
+
 	print "\nReporte listado condicion de distribucion: $nombre_nuevo_reporte \n";
 	close(REPORTE);	
 }
