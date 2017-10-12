@@ -404,6 +404,9 @@ done
 
 if [ $archEmitidosCreado -gt 0 ];then
 	perl listador.pl -a	
+	#Escribimos log
+	mensajeLog="Invocar a LISTADOR"
+	escribirLog "INF" "$mensajeLog"	
 fi
 
 
