@@ -1,15 +1,30 @@
 #!/bin/sh
 
-#TODO: chequear que se haya inicializado previamente el ambiente
-
 MYPATH="$(dirname \"$0\")"
 
 # Deberian venir seteadas de algun lado
-DIRABUS="pruebas_daemon/dirabus"
+DIRABUS="../../dirabus"
 DIRACCEPTED="../files_accepted"
 DIRREJECTED="../files_rejected"
 DIRMASTERFILES="../master_files"
 DIRLOGS="../logs"
+
+# Chequeo que se haya inicializado el ambiente
+if [ -z "$DIRABUS" ]; then
+	exit 1
+fi
+if [ -z "$DIRACCEPTED" ]; then
+	exit 1
+fi
+if [ -z "$DIRREJECTED" ]; then
+	exit 1
+fi
+if [ -z "$DIRMASTERFILES" ]; then
+	exit 1
+fi
+if [ -z "$DIRLOGS" ]; then
+	exit 1
+fi
 
 STOP="false"
 CYCLE=0
