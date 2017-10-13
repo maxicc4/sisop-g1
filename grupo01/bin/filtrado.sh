@@ -1,1 +1,1 @@
-cat $1 | awk 'BEGIN {FS=";"} $22="003" && $1="BAPRO" {print "La cuenta: " $2  " pasó los filtros y tiene CONDICION DE DISTRIBUCION: " $7 } '
+cat $1 | awk '/003/ '| cut -d ';' -f2

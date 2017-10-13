@@ -1,15 +1,30 @@
 #!/bin/sh
 
-#TODO: chequear que se haya inicializado previamente el ambiente
-
 MYPATH="$(dirname \"$0\")"
 
 # Deberian venir seteadas de algun lado
-DIRABUS="pruebas_daemon/dirabus"
+DIRABUS="../../dirabus"
 DIRACCEPTED="../files_accepted"
 DIRREJECTED="../files_rejected"
 DIRMASTERFILES="../master_files"
 DIRLOGS="../logs"
+
+# Chequeo que se haya inicializado el ambiente
+if [ -z "$DIRABUS" ]; then
+	exit 1
+fi
+if [ -z "$DIRACCEPTED" ]; then
+	exit 1
+fi
+if [ -z "$DIRREJECTED" ]; then
+	exit 1
+fi
+if [ -z "$DIRMASTERFILES" ]; then
+	exit 1
+fi
+if [ -z "$DIRLOGS" ]; then
+	exit 1
+fi
 
 STOP="false"
 CYCLE=0
@@ -91,7 +106,7 @@ writeLog()
 runValidator()
 {
 	# Cambiar despues por el nombre o ubicacion del validador
-	validador &
+	bash validador.sh &
 	VALIDATORID=$!
 	writeLog "Validador invocado: process id $VALIDATORID"
 }
@@ -179,7 +194,6 @@ while [ "$STOP" = "false" ]; do
 		getFile
 	done
 
-	: ' Lo comento por ahora hasta que este el validador
 	if [ "$(ls -A $DIRACCEPTED)" ]; then
 		# La primera vez entra aca
 		if [ "$VALIDATORID" = "" ]; then
@@ -193,7 +207,6 @@ while [ "$STOP" = "false" ]; do
 			fi
 		fi
 	fi
-	'
 
 	if [ $COUNTERTRUNCATELOG -ge 100 ]; then
 		tail -n50 "$DIRLOGS/demonio.log" > "$DIRLOGS/demonio2.log"

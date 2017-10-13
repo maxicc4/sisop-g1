@@ -1,24 +1,90 @@
-2017/10/08 23:29:58 - Ciclo Numero 1
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/0003_20170925.txt>: Nombre de archivo invalido
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20170916.txt>: Archivo vacio
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20170925.txt>: Archivo vacio
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/123_20171223.txt>: Fecha adelantada
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/123_20170823>: Nombre de archivo invalido
-2017/10/08 23:29:58 - Novedad aceptada <pruebas_daemon/dirabus/016_20171008.txt>
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20020819.txt>: Tipo de archivo invalido
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/003_20170231.txt>: Fecha invalida
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/fdfd.txt>: Nombre de archivo invalido
-2017/10/08 23:29:58 - Novedad aceptada <pruebas_daemon/dirabus/087_20170823.txt>
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/083_20170823.txt>: Entidad inexistente
-2017/10/08 23:29:58 - Novedad rechazada <pruebas_daemon/dirabus/123_20170823.txt>: Entidad inexistente
-2017/10/08 23:30:01 - Ciclo Numero 2
-2017/10/08 23:30:04 - Ciclo Numero 3
-2017/10/08 23:30:07 - Ciclo Numero 4
-2017/10/08 23:30:10 - Ciclo Numero 5
-2017/10/08 23:30:13 - Ciclo Numero 6
-2017/10/08 23:30:17 - Ciclo Numero 7
-2017/10/08 23:30:20 - Ciclo Numero 8
-2017/10/08 23:30:23 - Ciclo Numero 9
-2017/10/08 23:30:26 - Ciclo Numero 10
-2017/10/08 23:30:29 - Ciclo Numero 11
-2017/10/08 23:30:32 - Ciclo Numero 12
+2017/10/12 21:19:11 - Ciclo Numero 1
+2017/10/12 21:19:11 - Novedad aceptada <../../dirabus/003_20170903.txt>
+2017/10/12 21:19:11 - Validador invocado: process id 12391
+2017/10/12 21:19:14 - Ciclo Numero 2
+2017/10/12 21:19:14 - Validador invocado: process id 12401
+2017/10/12 21:19:17 - Ciclo Numero 3
+2017/10/12 21:19:17 - Validador invocado: process id 12411
+2017/10/12 21:21:31 - Ciclo Numero 1
+2017/10/12 21:21:31 - Validador invocado: process id 12473
+2017/10/12 21:21:34 - Ciclo Numero 2
+2017/10/12 21:21:34 - Validador invocado: process id 12485
+2017/10/12 21:21:37 - Ciclo Numero 3
+2017/10/12 21:21:37 - Validador invocado: process id 12495
+2017/10/12 21:21:50 - Ciclo Numero 1
+2017/10/12 21:21:50 - Validador invocado: process id 12524
+2017/10/12 21:21:53 - Ciclo Numero 2
+2017/10/12 21:21:53 - Invocacion del Validador pospuesta para el siguiente ciclo
+2017/10/12 21:21:56 - Ciclo Numero 3
+2017/10/12 21:21:59 - Ciclo Numero 4
+2017/10/12 21:22:02 - Ciclo Numero 5
+2017/10/12 21:22:05 - Ciclo Numero 6
+2017/10/12 21:22:08 - Ciclo Numero 7
+2017/10/12 21:22:11 - Ciclo Numero 8
+2017/10/12 21:22:14 - Ciclo Numero 9
+2017/10/12 21:22:17 - Ciclo Numero 10
+2017/10/12 21:22:20 - Ciclo Numero 11
+2017/10/12 21:22:23 - Ciclo Numero 12
+2017/10/12 21:22:26 - Ciclo Numero 13
+2017/10/12 21:22:29 - Ciclo Numero 14
+2017/10/12 21:22:32 - Ciclo Numero 15
+2017/10/12 21:22:35 - Ciclo Numero 16
+2017/10/12 21:22:38 - Ciclo Numero 17
+2017/10/12 21:22:41 - Ciclo Numero 18
+2017/10/12 21:22:44 - Ciclo Numero 19
+2017/10/12 21:22:47 - Ciclo Numero 20
+2017/10/12 21:22:50 - Ciclo Numero 21
+2017/10/12 21:22:53 - Ciclo Numero 22
+2017/10/12 21:22:56 - Ciclo Numero 23
+2017/10/12 21:22:59 - Ciclo Numero 24
+2017/10/12 21:23:02 - Ciclo Numero 25
+2017/10/12 21:23:05 - Ciclo Numero 26
+2017/10/12 21:23:08 - Ciclo Numero 27
+2017/10/12 21:23:11 - Ciclo Numero 28
+2017/10/12 21:23:14 - Ciclo Numero 29
+2017/10/12 21:23:17 - Ciclo Numero 30
+2017/10/12 21:23:20 - Ciclo Numero 31
+2017/10/12 21:23:23 - Ciclo Numero 32
+2017/10/12 21:23:26 - Ciclo Numero 33
+2017/10/12 21:23:29 - Ciclo Numero 34
+2017/10/12 21:23:32 - Ciclo Numero 35
+2017/10/12 21:23:35 - Ciclo Numero 36
+2017/10/12 21:23:38 - Ciclo Numero 37
+2017/10/12 21:23:41 - Ciclo Numero 38
+2017/10/12 21:23:44 - Ciclo Numero 39
+2017/10/12 21:23:47 - Ciclo Numero 40
+2017/10/12 21:23:50 - Ciclo Numero 41
+2017/10/12 21:23:53 - Ciclo Numero 42
+2017/10/12 21:23:56 - Ciclo Numero 43
+2017/10/12 21:23:59 - Ciclo Numero 44
+2017/10/12 21:24:02 - Ciclo Numero 45
+2017/10/12 21:24:05 - Ciclo Numero 46
+2017/10/12 21:24:08 - Ciclo Numero 47
+2017/10/12 21:24:11 - Ciclo Numero 48
+2017/10/12 21:24:14 - Ciclo Numero 49
+2017/10/12 21:24:17 - Ciclo Numero 50
+2017/10/12 21:24:20 - Ciclo Numero 51
+2017/10/12 21:24:23 - Ciclo Numero 52
+2017/10/12 21:24:26 - Ciclo Numero 53
+2017/10/12 21:24:29 - Ciclo Numero 54
+2017/10/12 21:24:32 - Ciclo Numero 55
+2017/10/12 21:24:35 - Ciclo Numero 56
+2017/10/12 21:24:38 - Ciclo Numero 57
+2017/10/12 21:24:41 - Ciclo Numero 58
+2017/10/12 21:24:44 - Ciclo Numero 59
+2017/10/12 21:24:47 - Ciclo Numero 60
+2017/10/12 21:24:50 - Ciclo Numero 61
+2017/10/12 21:24:53 - Ciclo Numero 62
+2017/10/12 21:24:56 - Ciclo Numero 63
+2017/10/12 21:24:59 - Ciclo Numero 64
+2017/10/12 21:25:02 - Ciclo Numero 65
+2017/10/12 21:25:05 - Ciclo Numero 66
+2017/10/12 21:25:08 - Ciclo Numero 67
+2017/10/12 21:25:11 - Ciclo Numero 68
+2017/10/12 21:25:14 - Ciclo Numero 69
+2017/10/12 21:25:17 - Ciclo Numero 70
+2017/10/12 21:25:20 - Ciclo Numero 71
+2017/10/12 21:25:23 - Ciclo Numero 72
+2017/10/12 21:25:26 - Ciclo Numero 73
+2017/10/12 21:25:29 - Ciclo Numero 74
+2017/10/12 21:25:32 - Ciclo Numero 75

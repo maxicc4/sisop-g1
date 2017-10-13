@@ -28,18 +28,17 @@ echo "$(date +"%D %X")-$1-$2-$3-$4">>$DIR_INSTALACION/$DIR_CONFIG/Instalacion.lo
 
 createConfigFile(){
 #rm $DIR_INSTALACION/$DIR_CONFIG/config.txt
-echo "ejecutables-$DIR_INSTALACION/$DIR_EJECUTABLES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
-echo "maestros-$DIR_INSTALACION/$DIR_MAESTROS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
-echo "aceptados-$DIR_INSTALACION/$DIR_ACEPTADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
-echo "rechazados-$DIR_INSTALACION/$DIR_RECHAZADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
-echo "validados-$DIR_INSTALACION/$DIR_VALIDADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
-echo "reportes-$DIR_INSTALACION/$DIR_REPORTES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
-echo "log-$DIR_INSTALACION/$DIR_LOG-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+	echo "ejecutables-$DIR_INSTALACION/$DIR_EJECUTABLES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+	echo "maestros-$DIR_INSTALACION/$DIR_MAESTROS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+	echo "aceptados-$DIR_INSTALACION/$DIR_ACEPTADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+	echo "rechazados-$DIR_INSTALACION/$DIR_RECHAZADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+	echo "validados-$DIR_INSTALACION/$DIR_VALIDADOS-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+	echo "reportes-$DIR_INSTALACION/$DIR_REPORTES-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
+	echo "log-$DIR_INSTALACION/$DIR_LOG-$USER-$(date +"%D %X")">>$DIR_INSTALACION/$DIR_CONFIG/config.config
 
 }
 
 makeDirectories(){
-
 mkdir -p $DIR_INSTALACION/$DIR_EJECUTABLES
 mkdir -p $DIR_INSTALACION/$DIR_MAESTROS
 mkdir -p $DIR_INSTALACION/$DIR_ACEPTADOS
@@ -49,7 +48,6 @@ mkdir -p $DIR_INSTALACION/$DIR_REPORTES
 mkdir -p $DIR_INSTALACION/$DIR_LOG
 echo "Estructura de los directorios de instalacion"
 echo "============================================"
-#tree -d $DIR_INSTALACION
 find $DIR_INSTALACION -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
 echo ""
 }
@@ -62,12 +60,11 @@ if [ "$1" != "" ];then
         -l | --log )           shift
                                 echo "apreto f"
                                 ;;
-	-f | --fast)		shift
-				echo "instalacion default"
-				$INSTALACION_RAPIDA=1
-				;;
+		-f | --fast)			shift
+								echo "instalacion default"
+								$INSTALACION_RAPIDA=1;;
         -r | --repair)	        echo "Reparacion de sistema"
-				reinstall
+								reinstall
                                 ;;
         -h | --help )       	checkNameDirectories
 				exit
@@ -78,10 +75,57 @@ if [ "$1" != "" ];then
     esac
     shift
 else
+
+	
+if  checkFilesForInstall;then	
+echo "Chequeo de archivos necesarios para instalacion Correctos"
 checkPreviousInstallation
+else
+echo "faltan archivos de instalacion. Terminando Instalacion"
+fi
+
 fi
 #done
 }
+
+checkFilesForInstall(){
+
+if [ -d $DIR_INSTALACION/maestros ]; then
+        echo "existe dir maestros"
+else
+        echo "no existe maestros"
+        mkdir $DIR_INSTALACION/maestros
+fi
+
+
+if [ -d $DIR_INSTALACION/dirconf ]; then
+	echo "existe dirconf"
+else
+	echo "no existe dirconf"
+	no_dirconf=1
+fi
+if [ -f $(pwd)/maestros.tar ];then
+	echo "existe el tar maestros"
+else
+	echo "no existe el tar maestros"
+	no_mae=1
+fi
+
+if [ -f $(pwd)/bin.tar ];then
+	echo "existe el tar bin"
+else
+	echo "no existe el tar bin"
+	no_bin=1
+fi
+
+if [ "$no_dirconf" == 1  -o  "$no_mae" == 1  -o  "$no_bin" == 1 ];then
+echo "un arhivo no existe"
+return 1
+else 
+return 0
+fi
+}
+
 
 checkPerl(){
 
@@ -265,9 +309,14 @@ echo "reparacion"
 
 extrayendoMaestros(){
 
-tar -xf maestros.tar -C $DIR_INSTALACION
+tar -xf maestros.tar -C /$DIR_INSTALACION/maestros
 tar -xf bin.tar
 cp -r bin/. $DIR_INSTALACION/$DIR_EJECUTABLES/
+}
+
+removeInstallationFiles(){
+echo "Borrando archivos de instalacion"
+rm -r $(pwd)/bin
 }
 
 existeFile(){
@@ -287,6 +336,7 @@ setup
 fi
 
 }
+
 setup(){
 clear
 echo "*******************************************************************"
@@ -330,6 +380,7 @@ read confirmar
 	continuar=0
 	makeDirectories
 	extrayendoMaestros
+	removeInstallationFiles
 	fi
 done
 createConfigFile
@@ -426,5 +477,4 @@ checkFiles
 #################################################################
 ##############FUNCIONES DE INSTALACION###########################
 commands $1
-chmod +x $DIR_INSTALACION/bin/*.sh
 #checkFiles
