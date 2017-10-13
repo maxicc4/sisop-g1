@@ -451,6 +451,7 @@ fi
 
 if ! [ -d $maestro ]; then
 mkdir $maestro
+extrayendoMaestros
 echo "$maestro"
 fi
 
