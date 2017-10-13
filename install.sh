@@ -64,7 +64,7 @@ if [ "$1" != "" ];then
 								echo "instalacion default"
 								$INSTALACION_RAPIDA=1;;
         -r | --repair)	        echo "Reparacion de sistema"
-								reinstall
+								repair
                                 ;;
         -h | --help )       	checkNameDirectories
 				exit
@@ -310,8 +310,13 @@ echo "reparacion"
 extrayendoMaestros(){
 
 tar -xf maestros.tar -C /$DIR_INSTALACION/maestros
+}
+
+extrayendoBinFiles(){
 tar -xf bin.tar
-cp -r bin/. $DIR_INSTALACION/$DIR_EJECUTABLES/
+cp -r bin/. $1/
+#cp -r bin/. $DIR_INSTALACION/$DIR_EJECUTABLES/
+
 }
 
 removeInstallationFiles(){
@@ -380,6 +385,7 @@ read confirmar
 	continuar=0
 	makeDirectories
 	extrayendoMaestros
+	extrayendoBinFiles $DIR_INSTALACION/$DIR_EJECUTABLES
 	removeInstallationFiles
 	fi
 done
@@ -407,7 +413,7 @@ fi
 
 
 repair(){
-archivoConf=$DIR_INSTALACION/dirconf/config.txt
+archivoConf=$DIR_INSTALACION/dirconf/config.config
 while read lineaConf
 do
 	directorio=$(echo "$lineaConf" | cut -d '-' -f1)
@@ -439,7 +445,10 @@ done < $archivoConf
 
 if existeCarpeta $ejecutable; then
 mkdir $ejecutable
-echo "$ejecutable"
+extrayendoBinFiles $ejecutable
+#removeInstallationFiles
+echo "ruta de instalacion"
+echo "$DIR_INSTALACION/$ejecutable"
 fi
 
 if existeCarpeta $maestro; then
@@ -468,10 +477,6 @@ if existeCarpeta $log; then
 mkdir $log
 fi
 
-}
-
-reinstall(){
-checkFiles
 }
 
 #################################################################
