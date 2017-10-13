@@ -1,18 +1,18 @@
-DirActual=$DIR_INSTALACION #PWD
+DirActual="/home/ixam/sisop/sisop-g1/grupo01"
 #Guardo las rutas de los directorios:
-acept=$ACEPTADOS
-recha=$RECHAZADOS
-valid=$VALIDADOS
-log=$LOGS
+acept="$DirActual/files_accepted"
+recha="$DirActual/files_rejected"
+valid="$DirActual/files_validated"
+log="$DirActual/logs"
 proc="$DirActual/procesados"
 dupli="$recha/dup"
 archivolog="$log/ValidadorLog.log"
 archivoSecEmitidos="$valid/secuenciaArchivosEmitidos.txt"
 archivoSecDuplicados="$dupli/secuenciaArchivosRechazadosDuplicados.txt"
 archivoRechazados="$recha/Plasticos_rechazados.txt"
-archivoCumae="$DirActual/maestros/cumae"
-archivoBamae="$DirActual/maestros/bamae"
-archivoTarjetas="$DirActual/maestros/tx_tarjetas"
+archivoCumae="$DirActual/master_files/cumae"
+archivoBamae="$DirActual/master_files/bamae"
+archivoTarjetas="$DirActual/master_files/tx_tarjetas"
 #validar que este el directorio de aceptados
 archivosAceptados=$(ls $acept)
 
