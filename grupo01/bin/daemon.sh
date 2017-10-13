@@ -106,7 +106,7 @@ writeLog()
 runValidator()
 {
 	# Cambiar despues por el nombre o ubicacion del validador
-	sh "validador.sh" &
+	bash validador.sh &
 	VALIDATORID=$!
 	writeLog "Validador invocado: process id $VALIDATORID"
 }

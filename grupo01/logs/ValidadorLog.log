@@ -1,0 +1,8 @@
+20171012 21:21:50-ixam-Validador-ERROR-Archivo procesado <003_20170903.txt> registro N1: Error! No existe el numero de cuenta en el maestro de cuentas Cumae
+20171012 21:21:51-ixam-Validador-INF-Archivo procesado <003_20170903.txt> registro N2: Aceptado
+20171012 21:21:52-ixam-Validador-INF-Archivo procesado <003_20170903.txt> registro N3: Aceptado
+20171012 21:21:53-ixam-Validador-INF-Archivo procesado <003_20170903.txt> registro N4: Aceptado
+20171012 21:21:53-ixam-Validador-INF-Archivo procesado <003_20170903.txt> Total de registros leidos: 4
+20171012 21:21:53-ixam-Validador-INF-Archivo procesado <003_20170903.txt> Total de registros aceptados: 3
+20171012 21:21:53-ixam-Validador-INF-Archivo procesado <003_20170903.txt> Total de registros rechazados: 1
+20171012 21:21:53-ixam-Validador-INF-Invocar a LISTADOR

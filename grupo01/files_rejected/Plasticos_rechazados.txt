@@ -1,0 +1,2 @@
+FUENTE;MOTIVO DEL RECHAZO;NRO CUENTA;DOCUMENTO TARJETA;DENOMINACION DE TARJETA;T1;T2;T3;T4;FECHA DESDE;FECHA HASTA
+003_20170903.txt;No existe el numero de cuenta en el maestro de cuentas Cumae;Nro de Cuenta;Documento Tarjeta;Denominacion en la Tarjeta;t1;t2;t3;t4;Fecha desde;Fecha hasta
