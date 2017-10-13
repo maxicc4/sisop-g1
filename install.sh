@@ -354,16 +354,6 @@ sleep 1
 
 
 
-#if tipoDeInstalacion;then 
-#echo "Se encuentra una version instalada del sistema. Desea reparar el sistema? (y/n)"
-#read opcion
-#if [ "$opcion" == "y" ]; then
-#reinstall
-#fi
-
-#else
-
-
 #Inicializo el log 
 loguear $USER "INSTALACION" "Inicio de instalacción" "Inicio de log correcto"
 
@@ -397,7 +387,7 @@ fi
 #devuelve 0 si la carpeta existe
 existeCarpeta(){
 
-[ -d $1 ] && return 1 || return 0
+[ -d $1 ] && return 0 || return 1
 
 }
 
@@ -442,40 +432,59 @@ do
 done < $archivoConf
 
 #checkMasterFiles
+#for f in $(pwd)/bin/*
+#do
+#if [ -f $ejecutable/$f ];then
+#echo "existe"
+#fi
+#done
 
-if existeCarpeta $ejecutable; then
+
+if ! [ -d $ejecutable ]; then
 mkdir $ejecutable
+#chmod 777 $ejecutable
 extrayendoBinFiles $ejecutable
-#removeInstallationFiles
+removeInstallationFiles
 echo "ruta de instalacion"
-echo "$DIR_INSTALACION/$ejecutable"
+echo "$ejecutable"
 fi
 
-if existeCarpeta $maestro; then
+if ! [ -d $maestro ]; then
 mkdir $maestro
 echo "$maestro"
 fi
 
-if existeCarpeta $rechazado; then
+if ! [ -d $rechazado ]; then
 echo "$rechazado"
 mkdir $rechazado
 fi
 
-if existeCarpeta $validado; then
+if ! [ -d $validado ]; then
 mkdir $validado
 fi
 
-if existeCarpeta $reportes; then
+if ! [ -d $reportes ]; then
 mkdir $reportes
 fi
 
-if existeCarpeta $acept; then
+if ! [ -d $acept ]; then
 mkdir $acept
 fi
 
-if existeCarpeta $log; then
+if ! [ -d $log ]; then
 mkdir $log
 fi
+
+## cheque que existan todos los achivos ejecutables
+
+#extrayendoBinFiles
+
+for f in $(pwd)/bin/*
+do
+if [ -f $ejecutable/$f ];then
+echo "existe"
+fi
+done
 
 }
 
@@ -483,3 +492,4 @@ fi
 ##############FUNCIONES DE INSTALACION###########################
 commands $1
 #checkFiles
+#FILES=$(pwd)/bin/
