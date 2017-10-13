@@ -313,8 +313,8 @@ tar -xf maestros.tar -C /$DIR_INSTALACION/maestros
 }
 
 extrayendoBinFiles(){
-tar -xf bin.tar
-cp -r bin/. $1/
+tar -xf bin.tar -C /$1
+#cp -r bin/. $1/
 #cp -r bin/. $DIR_INSTALACION/$DIR_EJECUTABLES/
 
 }
@@ -376,7 +376,7 @@ read confirmar
 	makeDirectories
 	extrayendoMaestros
 	extrayendoBinFiles $DIR_INSTALACION/$DIR_EJECUTABLES
-	removeInstallationFiles
+#	removeInstallationFiles
 	fi
 done
 createConfigFile
@@ -441,10 +441,9 @@ done < $archivoConf
 
 
 if ! [ -d $ejecutable ]; then
-mkdir $ejecutable
-#chmod 777 $ejecutable
+mkdir -p $ejecutable
 extrayendoBinFiles $ejecutable
-removeInstallationFiles
+#removeInstallationFiles
 echo "ruta de instalacion"
 echo "$ejecutable"
 fi
