@@ -1,0 +1,1 @@
+cat $1 | awk 'BEGIN {FS=";"} {print "La cuenta: " $2  " tiene CONDICION DE DISTRIBUCION: " $7 } '

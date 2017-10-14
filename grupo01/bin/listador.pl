@@ -27,8 +27,4 @@ if ($ARGV[0] eq '-a') {
 	print "El modo de ejecucion $ARGV[0] es invalido\n";
 }
 
-print "sleeping\n";
-sleep(30);
-print "end of program\n";
-
 __DATA__

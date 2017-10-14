@@ -1,13 +1,13 @@
 package Listador;
 use Time::Piece;
 use Time::Seconds;
-# use File::Find::Rule;
 
 
-# $directorio_validados=$ENV{'files_validated'};
-# $files_reports=$ENV{'files_report'};
-$directorio_validados = '../files_validated/'; 
-$directorio_reportes = '../files_report/';
+$directorio_validados=$ENV{'VALIDADOS'};
+$directorio_reportes=$ENV{'REPORTES'}
+
+# $directorio_validados = '../files_validated/'; 
+# $directorio_reportes = '../files_report/';
 
 sub valores_input{
 	print "Indique una o varias opciones separadas por \",\ : "; 
@@ -21,7 +21,7 @@ sub obtener_directorios_archivos {
 }
 
 sub obtener_directorios_archivos_que_contengan {
-	return  `ls -t @_[0]  | grep @_[1]`;
+	return  `ls -t -f @_[0]  | grep @_[1]`;
 }
 
 sub filtrar_duplicados {
@@ -39,7 +39,6 @@ sub obtener_nombre_nuevo_reporte{
 1;
 
 #TODO:
-# - TERMINAR LISTADOS
 # - FILTROS PARA TODOS LOS LISTADOS
 # - .SH QUE VALIDAN AMBIENTE
 # - SETEAR VALIABLES DE AMBIENTE

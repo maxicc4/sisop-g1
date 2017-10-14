@@ -1,0 +1,1 @@
+cat $1 | awk 'BEGIN {FS=";"} $22="BAPRO" && $1="003_20170903.txt" {print "La cuenta: " $2  " pasó los filtros y tiene CONDICION DE DISTRIBUCION: " $7 } '
