@@ -1,35 +1,35 @@
 #!/bin/sh
 
-MYPATH="$(dirname \"$0\")"
+#export DIRABUS="/home/ixam/sisop/sisop-g1/dirabus"
+#export ACEPTADOS="/home/ixam/sisop/sisop-g1/grupo01/files_accepted"
+#export RECHAZADOS="/home/ixam/sisop/sisop-g1/grupo01/files_rejected"
+#export MAESTROS="/home/ixam/sisop/sisop-g1/grupo01/master_files"
+#export LOGS="/home/ixam/sisop/sisop-g1/grupo01/logs"
+#export VALIDADOS="/home/ixam/sisop/sisop-g1/grupo01/files_validated"
 
-# Deberian venir seteadas de algun lado
-DIRABUS="../../dirabus"
-DIRACCEPTED="../files_accepted"
-DIRREJECTED="../files_rejected"
-DIRMASTERFILES="../master_files"
-DIRLOGS="../logs"
+MYPATH="$(dirname $0\")"
 
 # Chequeo que se haya inicializado el ambiente
 if [ -z "$DIRABUS" ]; then
 	exit 1
 fi
-if [ -z "$DIRACCEPTED" ]; then
+if [ -z "$ACEPTADOS" ]; then
 	exit 1
 fi
-if [ -z "$DIRREJECTED" ]; then
+if [ -z "$RECHAZADOS" ]; then
 	exit 1
 fi
-if [ -z "$DIRMASTERFILES" ]; then
+if [ -z "$MAESTROS" ]; then
 	exit 1
 fi
-if [ -z "$DIRLOGS" ]; then
+if [ -z "$LOGS" ]; then
 	exit 1
 fi
 
 STOP="false"
 CYCLE=0
 COUNTERTRUNCATELOG=0
-BANKENTITIES="$(cut -d';' -f1 "$DIRMASTERFILES/bamae")"
+BANKENTITIES="$(cut -d';' -f1 "$MAESTROS/bamae")"
 VALIDATORID=""
 
 # Se obtiene de a un archivo por vez
@@ -100,13 +100,12 @@ verifyEntityExistsInMaster()
 writeLog()
 {
 	CURRENTDATE="$(date "+%Y/%m/%d %H:%M:%S")"
-	echo "$CURRENTDATE - $1" >> "$DIRLOGS/demonio.log"
+	echo "$CURRENTDATE - $1" >> "$LOGS/demonio.log"
 }
 
 runValidator()
 {
-	# Cambiar despues por el nombre o ubicacion del validador
-	bash validador.sh &
+	bash "$MYPATH/validador.sh" &
 	VALIDATORID=$!
 	writeLog "Validador invocado: process id $VALIDATORID"
 }
@@ -127,14 +126,14 @@ rejectFile()
 {
 	writeLog "Novedad rechazada <$FILE>: $1"
 	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
-	if [ -e "$DIRREJECTED/$NAMEFILE" ]; then
-		if [ ! -d "$DIRREJECTED/dup" ]; then
-			mkdir "$DIRREJECTED/dup"
+	if [ -e "$RECHAZADOS/$NAMEFILE" ]; then
+		if [ ! -d "$RECHAZADOS/dup" ]; then
+			mkdir "$RECHAZADOS/dup"
 		fi
 		getDuplicateSequence "files_rejected"
-		mv $FILE "$DIRREJECTED/dup/$NAMEFILE.$SEQUENCEDUP"
+		mv $FILE "$RECHAZADOS/dup/$NAMEFILE.$SEQUENCEDUP"
 	else
-		mv $FILE $DIRREJECTED
+		mv $FILE $RECHAZADOS
 	fi
 }
 
@@ -142,14 +141,14 @@ acceptFile()
 {
 	writeLog "Novedad aceptada <$FILE>"
 	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
-	if [ -e "$DIRACCEPTED/$NAMEFILE" ]; then
-		if [ ! -d "$DIRACCEPTED/dup" ]; then
-			mkdir "$DIRACCEPTED/dup"
+	if [ -e "$ACEPTADOS/$NAMEFILE" ]; then
+		if [ ! -d "$ACEPTADOS/dup" ]; then
+			mkdir "$ACEPTADOS/dup"
 		fi
 		getDuplicateSequence "files_accepted"
-		mv $FILE "$DIRACCEPTED/dup/$NAMEFILE.$SEQUENCEDUP"
+		mv $FILE "$ACEPTADOS/dup/$NAMEFILE.$SEQUENCEDUP"
 	else
-		mv $FILE $DIRACCEPTED
+		mv $FILE $ACEPTADOS
 	fi
 }
 
@@ -194,7 +193,7 @@ while [ "$STOP" = "false" ]; do
 		getFile
 	done
 
-	if [ "$(ls -A $DIRACCEPTED)" ]; then
+	if [ "$(ls -A $ACEPTADOS)" ]; then
 		# La primera vez entra aca
 		if [ "$VALIDATORID" = "" ]; then
 			runValidator
@@ -209,11 +208,11 @@ while [ "$STOP" = "false" ]; do
 	fi
 
 	if [ $COUNTERTRUNCATELOG -ge 100 ]; then
-		tail -n50 "$DIRLOGS/demonio.log" > "$DIRLOGS/demonio2.log"
-		mv "$DIRLOGS/demonio2.log" "$DIRLOGS/demonio.log"
+		tail -n50 "$LOGS/demonio.log" > "$LOGS/demonio2.log"
+		mv "$LOGS/demonio2.log" "$LOGS/demonio.log"
 		writeLog "Log truncado"
 		COUNTERTRUNCATELOG=0
 	fi
 
-	sleep 3
+	sleep 5
 done
