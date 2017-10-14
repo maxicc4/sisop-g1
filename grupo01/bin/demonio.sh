@@ -1,28 +1,37 @@
 #!/bin/sh
 
+# Para pruebas
 #export DIRABUS="/home/ixam/sisop/sisop-g1/dirabus"
 #export ACEPTADOS="/home/ixam/sisop/sisop-g1/grupo01/files_accepted"
 #export RECHAZADOS="/home/ixam/sisop/sisop-g1/grupo01/files_rejected"
 #export MAESTROS="/home/ixam/sisop/sisop-g1/grupo01/master_files"
 #export LOGS="/home/ixam/sisop/sisop-g1/grupo01/logs"
+#export EJECUTABLES="/home/ixam/sisop/sisop-g1/grupo01/bin"
 #export VALIDADOS="/home/ixam/sisop/sisop-g1/grupo01/files_validated"
-
-MYPATH="$(dirname $0\")"
 
 # Chequeo que se haya inicializado el ambiente
 if [ -z "$DIRABUS" ]; then
+	echo "ERROR - Ambiente no inicializado"
 	exit 1
 fi
 if [ -z "$ACEPTADOS" ]; then
+	echo "ERROR - Ambiente no inicializado"
 	exit 1
 fi
 if [ -z "$RECHAZADOS" ]; then
+	echo "ERROR - Ambiente no inicializado"
 	exit 1
 fi
 if [ -z "$MAESTROS" ]; then
+	echo "ERROR - Ambiente no inicializado"
 	exit 1
 fi
 if [ -z "$LOGS" ]; then
+	echo "ERROR - Ambiente no inicializado"
+	exit 1
+fi
+if [ -z "$EJECUTABLES" ]; then
+	echo "ERROR - Ambiente no inicializado"
 	exit 1
 fi
 
@@ -100,31 +109,31 @@ verifyEntityExistsInMaster()
 writeLog()
 {
 	CURRENTDATE="$(date "+%Y/%m/%d %H:%M:%S")"
-	echo "$CURRENTDATE - $1" >> "$LOGS/demonio.log"
+	echo "$CURRENTDATE - $USER - $1 - $2" >> "$LOGS/demonio.log"
 }
 
 runValidator()
 {
-	bash "$MYPATH/validador.sh" &
+	bash "$EJECUTABLES/validador.sh" &
 	VALIDATORID=$!
-	writeLog "Validador invocado: process id $VALIDATORID"
+	writeLog "INFO" "Validador invocado: process id $VALIDATORID"
 }
 
 # Basicamente es un contador que se va guardando en un archivo oculto
 getDuplicateSequence()
 {
-	if [ -e "$MYPATH/.dups_$1" ]; then
-		SEQUENCEDUP="$(head -n1 "$MYPATH/.dups_$1")"
-		echo "$SEQUENCEDUP + 1" | bc > "$MYPATH/.dups_$1"
+	if [ -e "$EJECUTABLES/.dups_$1" ]; then
+		SEQUENCEDUP="$(head -n1 "$EJECUTABLES/.dups_$1")"
+		echo "$SEQUENCEDUP + 1" | bc > "$EJECUTABLES/.dups_$1"
 	else
 		SEQUENCEDUP=0
-		echo "1" > "$MYPATH/.dups_$1"
+		echo "1" > "$EJECUTABLES/.dups_$1"
 	fi
 }
 
 rejectFile()
 {
-	writeLog "Novedad rechazada <$FILE>: $1"
+	writeLog "INFO" "Novedad rechazada <$FILE>: $1"
 	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
 	if [ -e "$RECHAZADOS/$NAMEFILE" ]; then
 		if [ ! -d "$RECHAZADOS/dup" ]; then
@@ -139,7 +148,7 @@ rejectFile()
 
 acceptFile()
 {
-	writeLog "Novedad aceptada <$FILE>"
+	writeLog "INFO" "Novedad aceptada <$FILE>"
 	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
 	if [ -e "$ACEPTADOS/$NAMEFILE" ]; then
 		if [ ! -d "$ACEPTADOS/dup" ]; then
@@ -155,7 +164,7 @@ acceptFile()
 while [ "$STOP" = "false" ]; do
 	CYCLE=$((CYCLE+1))
 	COUNTERTRUNCATELOG=$((COUNTERTRUNCATELOG+1))
-	writeLog "Ciclo Numero $CYCLE"
+	writeLog "INFO" "Ciclo Numero $CYCLE"
 	getFile
 	while [ "$FILE" != "" ]; do
 		verifyFormatNameFile
@@ -200,7 +209,7 @@ while [ "$STOP" = "false" ]; do
 		else
 			# Si el proceso sigue corriendo
 			if [ "$(ps -q $VALIDATORID -o comm=)" ]; then
-				writeLog "Invocacion del Validador pospuesta para el siguiente ciclo"
+				writeLog "INFO" "Invocacion del Validador pospuesta para el siguiente ciclo"
 			else
 				runValidator
 			fi
@@ -210,7 +219,7 @@ while [ "$STOP" = "false" ]; do
 	if [ $COUNTERTRUNCATELOG -ge 100 ]; then
 		tail -n50 "$LOGS/demonio.log" > "$LOGS/demonio2.log"
 		mv "$LOGS/demonio2.log" "$LOGS/demonio.log"
-		writeLog "Log truncado"
+		writeLog "INFO" "Log truncado"
 		COUNTERTRUNCATELOG=0
 	fi
 
