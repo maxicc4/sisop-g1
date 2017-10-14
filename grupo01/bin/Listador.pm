@@ -4,7 +4,8 @@ use Time::Seconds;
 
 
 $directorio_validados=$ENV{'VALIDADOS'};
-$directorio_reportes=$ENV{'REPORTES'}
+$directorio_reportes=$ENV{'REPORTES'};
+
 
 # $directorio_validados = '../files_validated/'; 
 # $directorio_reportes = '../files_report/';
