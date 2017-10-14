@@ -393,7 +393,7 @@ if [ $archEmitidosCreado -gt 0 ];then
 	#Escribimos log
 	mensajeLog="Invocar a LISTADOR"
 	escribirLog "INF" "$mensajeLog"	
-	#perl $DirActual/listador.pl -a
+	perl $DirActual/listador.pl -a
 fi
 
 
