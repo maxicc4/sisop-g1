@@ -14,7 +14,7 @@ sub valores_input{
 }
 
 sub obtener_directorios_archivos {
-	return  `ls -t @_[0]*.txt | xargs -n 1 basename`; #ordenados por fecha de creacion 
+	return  `ls -t @_[0]`; #ordenados por fecha de creacion 
 }
 
 sub obtener_directorios_archivos_que_contengan {
