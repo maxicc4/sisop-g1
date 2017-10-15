@@ -126,7 +126,7 @@ sub listado_tarjetas {
 
 
 sub reporte_condicion_distribucion {
-	return `./reporte_condicion_distribucion.sh @_[0]`;
+	return `./scripts_listador/reporte_condicion_distribucion.sh @_[0]`;
 }
 
 sub listado_condicion_distribucion {
@@ -139,7 +139,7 @@ sub listado_condicion_distribucion {
 	printf REPORTE "LISTADO CONDICION DE DISTRIBUCIÓN:\n\n";
 
 	for $dir (@directorios){
-		print "En el directorio $dir:\n";
+		print "\nEn el directorio $dir\n";
 		print reporte_condicion_distribucion($dir);		
 	}
 
