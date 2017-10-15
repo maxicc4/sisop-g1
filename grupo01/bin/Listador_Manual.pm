@@ -5,12 +5,9 @@ use Listador;
 
 $directorio_validados=$ENV{'VALIDADOS'};
 $directorio_reportes=$ENV{'REPORTES'};
-# $directorio_validados = '../files_validated/';
-# $directorio_reportes = '../files_report/';
-
 
 sub filtro_a_bash {
-	open (BASH, ">", "/scripts_listador/filtrado.sh") or die $!;
+	open (BASH, ">", "scripts_listador/filtrado.sh") or die $!;
 	printf BASH @_[0];
 	close(BASH);
 }
@@ -19,7 +16,7 @@ sub seleccion_filtros_v1 {
 	@nombre_filtros = ("Filtro por entidad", "Filtro por Fuente", "Filtro por Condición de Distribución", "Filtro por Documento de Cuenta", "Filtro por Documento de Tarjeta");
 	print "\nSeleccione uno o varios filtros a aplicar: 
 0. Filtro por entidad
-1. Filtro por fuente (una o todas)
+1. Filtro por fuente
 2. Filtro por condición de distribución
 3. Filtro por documento cuenta
 4. Filtro por documento tarjeta\n";
@@ -31,15 +28,15 @@ sub seleccion_filtros_v1 {
 			$filtro = substr $filtro, 0, -1;
 
 			if ($num == 0) {
-				$bash_command = $bash_command . "\$22=\"$filtro\" && ";
+				$bash_command = $bash_command . "\$23==\"$filtro\" && ";
 			}elsif ($num == 1){
-				$bash_command = $bash_command . "\$1=\"$filtro\" && ";
+				$bash_command = $bash_command . "\$1==\"$filtro\" && ";
 			}elsif ($num == 2){
-				$bash_command = $bash_command . "\$7=\"$filtro\" && ";
+				$bash_command = $bash_command . "\$7==\"$filtro\" && ";
 			}elsif ($num == 3){
-				$bash_command = $bash_command . "\$18=\"$filtro\" && ";
+				$bash_command = $bash_command . "\$18~\"$filtro\" && ";
 			}elsif ($num == 4){
-				$bash_command = $bash_command . "\$10=\"$filtro\" &&";
+				$bash_command = $bash_command . "\$10~\"$filtro\" &&";
 			}
 		}else{
 			print "Input inválido";
@@ -167,26 +164,50 @@ sub listado_situcion_tarjeta {
 	$nombre_nuevo_reporte = Listador::obtener_nombre_nuevo_reporte("reporte");
 	open (REPORTE, ">>", $nombre_nuevo_reporte) or die $!;
 	
-
-	print "Ingresar documento de tarjeta: ";
-	$documento_cuenta = <STDIN>;
-	chomp($documento_cuenta);
-
-	print scalar $documento_cuenta;
+	print "Ingresar documento de tarjeta: ";$documento_tarjeta = <STDIN>;chomp($documento_tarjeta);
 
 	printf REPORTE "LISTADO SITUACION DE TARJETA:\n\n";
-
 	foreach $dir (@directorios){
-		$reporte = 	`./scripts_listador/situacion_tarjeta.sh $dir $documento_cuenta`;
-		if ($estado){
-			print "En el archivo: " . $dir . $reporte ;
-			printf REPORTE " En archivo: $dir" . $reporte;
+		$reporte = "";
+		open (OUTPUT, '-|',"scripts_listador/situacion_tarjeta.sh", ($dir,$documento_tarjeta));
+	    while (<OUTPUT>) {$reporte = $reporte . $_;}
+		if ($reporte){
+			print "\nEn el archivo: " . $dir . "\n" . $reporte;
+			printf REPORTE " En archivo: $dir\n" . $reporte;
 		}else{
 			print "Cuenta con documento de tarjeta: $documento_cuenta no encontrada\n";
-			printf REPORTE " En archivo: $dir La cuenta con documento de tarjeta: $documento_cuenta no figura";
+			printf REPORTE " En archivo: $dir \n La cuenta con documento de tarjeta: $documento_cuenta no figura";
 		}
 	}
 	print "\nReporte Situacion de TARJETA generado: $nombre_nuevo_reporte \n";
+	close OUTPUT;
+	close(REPORTE);
+}
+
+sub listado_situcion_cuenta {
+	print "\nLISTADO SITUACION DE CUENTA\n";
+	@directorios = Listador::filtrar_duplicados(seleccion_archivos());
+	
+	$nombre_nuevo_reporte = Listador::obtener_nombre_nuevo_reporte("reporte");
+	open (REPORTE, ">>", $nombre_nuevo_reporte) or die $!;
+	
+	print "Ingresar documento de tarjeta: ";$documento_cuenta = <STDIN>;chomp($documento_cuenta);
+
+	printf REPORTE "LISTADO SITUACION DE CUENTA:\n\n";
+	foreach $dir (@directorios){
+		$reporte = "";
+		open (OUTPUT, '-|',"scripts_listador/situacion_cuenta.sh", ($dir,$documento_cuenta));
+	    while (<OUTPUT>) {$reporte = $reporte . $_;}
+		if ($reporte){
+			print "\nEn el archivo: " . $dir . "\n" . $reporte;
+			printf REPORTE " En archivo: $dir\n" . $reporte;
+		}else{
+			print "Cuenta con documento de cuenta: $documento_cuenta no encontrada\n";
+			printf REPORTE " En archivo: $dir \n La cuenta con documento de cuenta: $documento_cuenta no figura";
+		}
+	}
+	print "\nReporte Situacion de CUENTA generado: $nombre_nuevo_reporte \n";
+	close OUTPUT;
 	close(REPORTE);
 }
 
@@ -250,7 +271,10 @@ sub manual {
 	if (@_[1] == '-h') {
 		print "Ayuda @_[1]: \n";
 		print "__________________________________________________________________________________\n";
-		print "Cada listado generado se va a salvar en la carpeta de reportes $directorio_reportes.\n";
+		print "Cada listado generado se va a salvar en la carpeta de reportes: 
+$directorio_reportes.
+siga las instrucciones indicadas por pantalla y elija las opciones que correspondan
+a su consulta\n";
 		print "__________________________________________________________________________________\n";
 	}
 
@@ -273,7 +297,7 @@ sub manual {
 		listado_cuentas() if ($opcionListado == 0);
 		listado_tarjetas() if ($opcionListado == 1);
 		listado_condicion_distribucion() if ($opcionListado == 2);
-		listado_situcion_tarjeta if ($opcionListado == 3);
+		listado_situcion_cuenta if ($opcionListado == 3);
 		listado_situcion_tarjeta if ($opcionListado == 4);
 		
 		print "\nPara continuar 1, para salir 0: \n";

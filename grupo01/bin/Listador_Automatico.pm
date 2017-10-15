@@ -5,8 +5,6 @@ use Listador;
 
 $directorio_validados=$ENV{'VALIDADOS'};
 $directorio_reportes=$ENV{'REPORTES'};
-# $directorio_validados = '../files_validated/';
-# $directorio_reportes = '../files_report/';
 
 sub automatico {
 	print "MODO AUTOMATICO\n";
