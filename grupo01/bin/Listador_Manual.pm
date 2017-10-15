@@ -3,8 +3,8 @@ package Listador_Manual;
 use Listador;
 
 
-$directorio_validados=$ENV{'VALIDADOS'};
-$directorio_reportes=$ENV{'REPORTES'};
+$directorio_validados=$ENV{'VALIDADOS'} . "/";
+$directorio_reportes=$ENV{'REPORTES'} . "/";
 
 sub filtro_a_bash {
 	open (BASH, ">", "scripts_listador/filtrado.sh") or die $!;

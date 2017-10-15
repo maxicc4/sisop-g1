@@ -3,8 +3,8 @@ use Listador;
 
 
 
-$directorio_validados=$ENV{'VALIDADOS'};
-$directorio_reportes=$ENV{'REPORTES'};
+$directorio_validados=$ENV{'VALIDADOS'}."/";
+$directorio_reportes=$ENV{'REPORTES'}."/";
 
 sub automatico {
 	print "MODO AUTOMATICO\n";
