@@ -7,7 +7,7 @@ $directorio_validados=$ENV{'VALIDADOS'}."/";
 $directorio_reportes=$ENV{'REPORTES'}."/";
 
 sub automatico {
-	$estado_sistema = `./sistemaInicializadoOk.sh`;
+	$estado_sistema = `./validarSistemaInicializado.sh`;
 	if(! $estado_sistema){
 		print "    Modo Automático\n";
 
