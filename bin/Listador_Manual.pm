@@ -7,7 +7,7 @@ $directorio_validados=$ENV{'VALIDADOS'} . "/";
 $directorio_reportes=$ENV{'REPORTES'} . "/";
 
 sub filtro_a_bash {
-	open (BASH, ">", "scripts_listador/filtrado.sh") or die $!;
+	open (BASH, ">", "filtrado.sh") or die $!;
 	printf BASH @_[0];
 	close(BASH);
 }
@@ -50,7 +50,7 @@ sub seleccion_filtros_v1 {
 
 
 sub reporte_cuentas {
-	return `./scripts_listador/reporte_cuentas.sh @_[0]`;
+	return `./reporte_cuentas.sh @_[0]`;
 }
 
 sub listado_cuentas {
@@ -71,7 +71,7 @@ sub listado_cuentas {
 
 	foreach $dir (@directorios){
 		
-		$output = `./scripts_listador/filtrado.sh $dir `;	
+		$output = `./filtrado.sh $dir `;	
 		if ($output){
 			print "\nEn archivo: $dir\n" . $output;
 			printf REPORTE "En archivo: $dir\n" . $output;
@@ -94,7 +94,7 @@ sub listado_tarjetas {
 
 	print "Tarjetas Denunciadas:\n";
 	foreach $dir (@directorios){
-		@tarjetas = `./scripts_listador/filtro_tarjetas_denunciadas.sh $dir` ;
+		@tarjetas = `./filtro_tarjetas_denunciadas.sh $dir` ;
 		if (@tarjetas){
 			print "En $dir las tarjetas DENUNCIADAS son:\n @tarjetas\n";
 			printf REPORTE "En $dir las tarjetas DENUNCIADAS son:\n @tarjetas\n";
@@ -103,7 +103,7 @@ sub listado_tarjetas {
 
 	print "Tarjetas Bloqueadas:\n";
 	foreach $dir (@directorios){
-		@tarjetas = `./scripts_listador/filtro_tarjetas_bloqueadas.sh $dir` ;
+		@tarjetas = `./filtro_tarjetas_bloqueadas.sh $dir` ;
 		if (@tarjetas){
 			print "En $dir las tarjetas BLOQUEADAS son:\n @tarjetas\n";
 			printf REPORTE "En $dir las tarjetas BLOQUEADAS son:\n @tarjetas\n";
@@ -112,7 +112,7 @@ sub listado_tarjetas {
 
 	print "Tarjetas General (no bloqueadas, no denunciadas):\n";
 	foreach $dir (@directorios){
-		@tarjetas = `./scripts_listador/filtro_tarjetas_general.sh $dir` ;
+		@tarjetas = `./filtro_tarjetas_general.sh $dir` ;
 		if (@tarjetas){
 			print "En $dir las tarjetas GENERAL son:\n @tarjetas\n";
 			printf REPORTE "En $dir las tarjetas GENERAL son:\n @tarjetas\n";
@@ -126,7 +126,7 @@ sub listado_tarjetas {
 
 
 sub reporte_condicion_distribucion {
-	return `./scripts_listador/reporte_condicion_distribucion.sh @_[0]`;
+	return `./reporte_condicion_distribucion.sh @_[0]`;
 }
 
 sub listado_condicion_distribucion {
@@ -146,7 +146,7 @@ sub listado_condicion_distribucion {
 	$bash_command = seleccion_filtros_v1() . "{print \"La cuenta: \" \$2  \" pasó los filtros y tiene CONDICION DE DISTRIBUCION: \" \$7 } '";
 	filtro_a_bash($bash_command);
 	foreach $dir (@directorios){
-		$output = `./scripts_listador/filtrado.sh $dir `;	
+		$output = `./filtrado.sh $dir `;	
 		if ($output){
 			print "\nEn archivo: $dir\n" . $output;
 			printf REPORTE "En archivo: $dir\n" . $output;
@@ -169,7 +169,7 @@ sub listado_situcion_tarjeta {
 	printf REPORTE "LISTADO SITUACION DE TARJETA:\n\n";
 	foreach $dir (@directorios){
 		$reporte = "";
-		open (OUTPUT, '-|',"scripts_listador/situacion_tarjeta.sh", ($dir,$documento_tarjeta));
+		open (OUTPUT, '-|',"situacion_tarjeta.sh", ($dir,$documento_tarjeta));
 	    while (<OUTPUT>) {$reporte = $reporte . $_;}
 		if ($reporte){
 			print "\nEn el archivo: " . $dir . "\n" . $reporte;
@@ -196,7 +196,7 @@ sub listado_situcion_cuenta {
 	printf REPORTE "LISTADO SITUACION DE CUENTA:\n\n";
 	foreach $dir (@directorios){
 		$reporte = "";
-		open (OUTPUT, '-|',"scripts_listador/situacion_cuenta.sh", ($dir,$documento_cuenta));
+		open (OUTPUT, '-|',"situacion_cuenta.sh", ($dir,$documento_cuenta));
 	    while (<OUTPUT>) {$reporte = $reporte . $_;}
 		if ($reporte){
 			print "\nEn el archivo: " . $dir . "\n" . $reporte;
@@ -285,7 +285,7 @@ a su consulta\n";
 		print 
 		"Seleccione una opcion de listado a generar:
 0. Listados de cuentas: general / cuentas activas / cuentas dadas de baja, ctx, o jud
-1. Listados de tarjetas: general / denunciadas / bloqueadas / vencidas
+1. Listados de tarjetas: general / denunciadas / bloqueadas 
 2. Listado de condicion de distribucion
 3. Listado de la situacion de una cuenta en particular
 4. Listado de la situacion de una tarjeta en particular

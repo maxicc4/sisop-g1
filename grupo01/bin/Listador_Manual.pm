@@ -285,7 +285,7 @@ a su consulta\n";
 		print 
 		"Seleccione una opcion de listado a generar:
 0. Listados de cuentas: general / cuentas activas / cuentas dadas de baja, ctx, o jud
-1. Listados de tarjetas: general / denunciadas / bloqueadas / vencidas
+1. Listados de tarjetas: general / denunciadas / bloqueadas
 2. Listado de condicion de distribucion
 3. Listado de la situacion de una cuenta en particular
 4. Listado de la situacion de una tarjeta en particular
