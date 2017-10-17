@@ -17,12 +17,15 @@ Una explicación de cómo descargar el paquete
 
 ## Descompresión del paquete
 
-Una explicación de cómo descomprimir, crear directorio del grupo, etc
-listado de comandos
+Ejecute el comando tar -xvzf tp.tgz dentro una carpeta previamente creada.
 
 ### Contenido del paquete
 
-Una explicación de lo que se crea a partir de la descompresión
+El paquete posee los siguientes archivos necesarios para la instalacion: 
+bin.tar (scripts ejecutables)
+maestros.tar (archivos maestros)
+grupo01 ( carpeta donde se realizará a la instalacion )
+install.sh (instalador)
 
 ## Pre-requisitos
 
@@ -39,20 +42,29 @@ Para poder instalar y ejecutar el sistema se requieren los siguientes programas:
 
 Después de descomprimir el paquete, procedemos a instalar el sistema con el comando:
 
-```
 . install.sh
-```
+Si el sistema se encuentra instalado correctamente la instalación terminará.
+Si el sistema se encuentra instalado con errores, se informará por pantalla.
 
 El sistema nos irá mostrando los subdirectorios de instalación por defecto, 
-dejandonos cambiarlos si así lo quisiéramos
+dejandonos cambiarlos si así lo quisiéramos.
 
 ### Reparación de una instalación
 
-Una explicacion de como reparar la reparación de la instalación, listado de comandos
+Para reparar el sistema ejecute el comando . install.sh -r
 
 ### Contenido de la instalación
 
-Que nos deja la instalación y dónde
+La estructura de instalación sera la siguiente: ( dependiendo del directorio de extraccion ) 
+
+/home/user/grupo01/ejecutables
+/home/user/grupo01/maestros
+/home/user/grupo01/aceptados
+/home/user/grupo01/rechazados
+/home/user/grupo01/validados
+/home/user/grupo01/reportes
+/home/user/grupo01/log
+/home/user/grupo01/dirconf
 
 ## Ejecución
 
@@ -66,6 +78,8 @@ cd grupo01/ejecutables
 . preparador.sh
 ```
 Este comando inicializará el sistema y dejará corriendo al demonio.
+
+Luego el sistema pedirá el ingreso de un directorio donde irá leyendo los archivos a procesar.
 
 ### Detener demonio
 
