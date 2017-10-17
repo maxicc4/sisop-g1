@@ -91,12 +91,19 @@ if [ "$1" != "" ];then
                                 ;;
 		-f | --fast)			shift
 								echo "instalacion default";;
-        -r | --repair)	        message="Reparacion del sistema"
+        -r | --repair)	        message=""
 								echo "$message"
 								loguear $USER "eleccion de comandos" "REPARACION" "opcion elegida"
 								loguear $USER "SISTEMA:" "Reparacion del sistema" "MENSAJE EN PANTALLA"
-
-								repair;;
+								if ! checkInstallation;then
+								repair
+								else
+								loguear $USER "SISTEMA:" "No existe sistema previo a reparar" "PANTALLA"
+								loguear $USER "commands:" "No existe sistema previo a reparar. Terminado reparacion" "ERROR"
+								echo "ERROR:"
+								echo "No existe sistema previo a reparar"
+								echo ""
+								fi;;
         -h | --help )       	echo "Tp sistemas operativos 7508"
 								echo "Para instalar el sistema el sistema ejecute el comando . install.sh"
 								echo "Si se encuentra una version no completa del sistema el proceso de instalación lo informará"
@@ -641,15 +648,24 @@ done
 
 	if [ $valido == 'y' ];then	
 	continuar=0
+	
 	makeDirectories
+	echo "Creando directorios"
+	barra_progreso
+	echo "INSTALANDO..."
+	barra_progreso
 	extrayendoMaestros $DIR_INSTALACION/$DIR_MAESTROS
 	extrayendoBinFiles $DIR_INSTALACION/$DIR_EJECUTABLES
 #	removeInstallationFiles
 	fi
 done
+echo "Creando arhivo de configuracion"
+barra_progreso
 createConfigFile
 fi
 #fi
+echo "Removiendo archivos de instalacion"
+barra_progreso
 }
 
 #devuelve 0 si la carpeta existe
@@ -669,18 +685,35 @@ fi
 
 }
 
+barra_progreso(){
+echo -ne '#####                     (33%)\r'
+sleep 1
+echo -ne '#############             (66%)\r'
+sleep 1
+echo -ne '#######################   (100%)\r'
+echo -ne '\n'
+}
 
 repair(){
+clear
+echo "*******************************************************************"
+echo "*	       							  *"
+echo "*                 		Reparacion 				                *"
+echo "*								  *"
+echo "*******************************************************************"
+echo ""
+sleep 1
 if  checkFilesForInstall;then
 echo "Chequeo de archivos necesarios para reparacion Correctos"
+echo "OK"
+echo ""
 archivoConf=$DIR_INSTALACION/dirconf/config.config
 while read lineaConf
 do
 	directorio=$(echo "$lineaConf" | cut -d '-' -f1)
 	case "$directorio" in
 		ejecutables)
-                        ejecutable=$(echo "$lineaConf" | cut -d '-' -f2)
-			echo "$ejecutable";;
+                        ejecutable=$(echo "$lineaConf" | cut -d '-' -f2);;
  		maestros)
                         maestro=$(echo "$lineaConf" | cut -d '-' -f2);;
  		rechazados)
@@ -701,6 +734,8 @@ do
 
 done < $archivoConf
 
+echo "Reparando directorios de instalacion"
+barra_progreso
 
 if ! [ -d $ejecutable ]; then
 mkdir -p $ejecutable
@@ -750,7 +785,8 @@ loguear $USER "repair:" "CREANDO DIRECTORIO RECHAZADOS $log" "REPARANDO"
 mkdir $log
 fi
 
-
+echo "Reparando archivos maestros"
+barra_progreso
 mkdir maestros
 extrayendoMaestros $(pwd)/maestros
 for f in $(pwd)/maestros/*
@@ -773,6 +809,8 @@ cp maestros/$g $maestro/
 fi
 done
 
+echo "Reparando archivos ejecutables"
+barra_progreso
 ## cheque que existan todos los achivos ejecutables
 mkdir bin
 extrayendoBinFiles $(pwd)/bin
