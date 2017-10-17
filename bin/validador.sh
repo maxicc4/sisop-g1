@@ -19,56 +19,16 @@ archivosAceptados=$(ls $acept)
 
 status_Installation(){
 	estado_sistema=0
-	if ! [ -d $EJECUTABLES ]; then
-		estado_sistema=1
-		echo "No existe la carpeta de ejecutables"
+	echo "Chequeando que el sistema este bien inicializado.."
+	sh $PWD/validarSistemaInicializado.sh
+	estado_sistema=$?
+	if [ $estado_sistema -eq 1 ];then
+		echo "Sistema inicializado incorrectamente"
 		#Escribimos log
-		mensajeLog="No existe la carpeta de ejecutables"
+		mensajeLog="Sistema inicializado incorrectamente"
 		escribirLog "ERROR" "$mensajeLog"
 		return $estado_sistema
 	fi
-	if ! [ -d $MAESTROS ]; then
-		estado_sistema=1
-		echo "No existe la carpeta maestro"
-		#Escribimos log
-		mensajeLog="No existe la carpeta maestro"
-		escribirLog "ERROR" "$mensajeLog"
-		return $estado_sistema
-	fi
-	if ! [ -d $RECHAZADOS ]; then
-		estado_sistema=1
-		echo "No existe la carpeta de rechazados"
-		#Escribimos log
-		mensajeLog="No existe la carpeta de rechazados"
-		escribirLog "ERROR" "$mensajeLog"
-		return $estado_sistema
-	fi
-	if ! [ -d $VALIDADOS ]; then
-		estado_sistema=1
-		echo "No existe la carpeta de validados"
-		#Escribimos log
-		mensajeLog="No existe la carpeta de validados"
-		escribirLog "ERROR" "$mensajeLog"
-		return $estado_sistema
-	fi
-
-	if ! [ -d $ACEPTADOS ]; then
-		estado_sistema=1
-		echo "No existe la carpeta de aceptados"
-		#Escribimos log
-		mensajeLog="No existe la carpeta de aceptados"
-		escribirLog "ERROR" "$mensajeLog"		
-		return $estado_sistema
-	fi
-	if ! [ -d $LOGS ]; then
-		estado_sistema=1
-		echo "No existe la carpeta de logs"
-		#Escribimos log
-		mensajeLog="No existe la carpeta de logs"
-		escribirLog "ERROR" "$mensajeLog"
-		return $estado_sistema
-	fi
-
 	#Chequea que existan todos los archivos maestros
 	if ! [ -f $archivoCumae ];then
 		estado_sistema=1
@@ -308,7 +268,6 @@ function validarRegistro(){
 		return 0
 	fi
 	cantDeCaractDenominacion=$(echo $regDenominacion | wc -c)
-	echo $cantDeCaractDenominacion
 	if [ "$cantDeCaractDenominacion" == "1" ]; then
 		motivo="Denominacion de la tarjea no informada"	
 		return 0
