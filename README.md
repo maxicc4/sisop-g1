@@ -26,8 +26,10 @@ Una explicación de lo que se crea a partir de la descompresión
 
 ## Pre-requisitos
 
-Una explicación sobre que se requiere para poder instalar y/o ejecutar el sistema 
+Para poder instalar y ejecutar el sistema se requieren los siguientes programas:
 
+* Bash
+* Shell Script
 * Perl versión 5 o superior
 
 
@@ -35,8 +37,14 @@ Una explicación sobre que se requiere para poder instalar y/o ejecutar el siste
 
 ### Instrucciones
 
-Instrucciones de instalación del sistema 
-Una explicación de como se hace una instalación, listado de comandos
+Después de descomprimir el paquete, procedemos a instalar el sistema con el comando:
+
+```
+. install.sh
+```
+
+El sistema nos irá mostrando los subdirectorios de instalación por defecto, 
+dejandonos cambiarlos si así lo quisiéramos
 
 ### Reparación de una instalación
 
@@ -50,9 +58,22 @@ Que nos deja la instalación y dónde
 
 ### Primeros pasos
 
-Cuáles son los primeros pasos para poder ejecutar el sistema
-Como arrancar o detener comandos 
-Cualquier otra indicación, diagrama, cuadro que considere adecuada, por ejemplo
+Para ejecutar el sistema, debemos situarnos en la carpeta de "ejecutables" y correr el preparador.
+Si no le cambiamos el nombre durante la instalación:
+
+```
+cd grupo01/ejecutables
+. preparador.sh
+```
+Este comando inicializará el sistema y dejará corriendo al demonio.
+
+### Detener demonio
+
+Para parar el demonio ejecutamos el comando:
+
+```
+stop_demonio
+```
 
 ### Listador
 
