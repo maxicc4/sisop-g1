@@ -1,0 +1,7 @@
+ejecutables
+maestros
+aceptados
+rechazados
+validados
+reportes
+logs

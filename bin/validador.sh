@@ -10,9 +10,9 @@ archivolog="$log/ValidadorLog.log"
 archivoSecEmitidos="$valid/secuencia/secuenciaArchivosEmitidos.txt"
 archivoSecDuplicados="$dupli/secuenciaArchivosRechazadosDuplicados.txt"
 archivoRechazados="$recha/Plasticos_rechazados.txt"
-archivoCumae="$DirActual/maestros/cumae"
-archivoBamae="$DirActual/maestros/bamae"
-archivoTarjetas="$DirActual/maestros/tx_tarjetas"
+archivoCumae="$MAESTROS/cumae"
+archivoBamae="$MAESTROS/bamae"
+archivoTarjetas="$MAESTROS/tx_tarjetas"
 #validar que este el directorio de aceptados
 archivosAceptados=$(ls $acept)
 
