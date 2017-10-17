@@ -1,0 +1,1 @@
+cat $1 | awk 'BEGIN {FS=";"} $5=="1" {print "Nro de Tarjeta: ("$12 "-" $13 "-"$14 "-"$15 ")"}'
