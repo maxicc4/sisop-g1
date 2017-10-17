@@ -97,8 +97,10 @@ if [ "$1" != "" ];then
 								loguear $USER "SISTEMA:" "Reparacion del sistema" "MENSAJE EN PANTALLA"
 
 								repair;;
-        -h | --help )       	message= "para reparar el sistema ejecute el comando -r"
-								echo  $ message
+        -h | --help )       	echo "Tp sistemas operativos 7508"
+								echo "Para instalar el sistema el sistema ejecute el comando . install.sh"
+								echo "Si se encuentra una version no completa del sistema el proceso de instalación lo informará"
+								echo "Si necesita reparar el sistema ejecute el comando . install.sh -r"
 								loguear $USER "SISTEMA:" "para reparar el sistema ejecute el comando -r" "MENSAJE EN PANTALLA"
 
                                 ;;
@@ -154,7 +156,9 @@ loguear $USER "checkFilesForInstall:" "CHEQUEO DE ARCHIVOS DE INSTALACION" "INIC
 if [ -d $DIR_INSTALACION/dirconf ]; then
     loguear $USER "checkFilesForInstall:" "Carpeta dirconf" "OK"
 else
-    loguear $USER "checkFilesForInstall:" "Carpeta maestros" "ERROR"
+    loguear $USER "checkFilesForInstall:" "Carpeta dirconf" "ERROR"
+    loguear $USER "checkFilesForInstall:" "Creando carpeta dirconf" "OK"
+
 	mkdir $DIR_INSTALACION/dirconf
 	no_dirconf=1
 fi
