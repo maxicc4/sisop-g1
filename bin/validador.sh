@@ -16,6 +16,102 @@ archivoTarjetas="$MAESTROS/tx_tarjetas"
 #validar que este el directorio de aceptados
 archivosAceptados=$(ls $acept)
 
+
+status_Installation(){
+	estado_sistema=0
+	if ! [ -d $EJECUTABLES ]; then
+		estado_sistema=1
+		echo "No existe la carpeta de ejecutables"
+		#Escribimos log
+		mensajeLog="No existe la carpeta de ejecutables"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+	if ! [ -d $MAESTROS ]; then
+		estado_sistema=1
+		echo "No existe la carpeta maestro"
+		#Escribimos log
+		mensajeLog="No existe la carpeta maestro"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+	if ! [ -d $RECHAZADOS ]; then
+		estado_sistema=1
+		echo "No existe la carpeta de rechazados"
+		#Escribimos log
+		mensajeLog="No existe la carpeta de rechazados"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+	if ! [ -d $VALIDADOS ]; then
+		estado_sistema=1
+		echo "No existe la carpeta de validados"
+		#Escribimos log
+		mensajeLog="No existe la carpeta de validados"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+
+	if ! [ -d $ACEPTADOS ]; then
+		estado_sistema=1
+		echo "No existe la carpeta de aceptados"
+		#Escribimos log
+		mensajeLog="No existe la carpeta de aceptados"
+		escribirLog "ERROR" "$mensajeLog"		
+		return $estado_sistema
+	fi
+	if ! [ -d $LOGS ]; then
+		estado_sistema=1
+		echo "No existe la carpeta de logs"
+		#Escribimos log
+		mensajeLog="No existe la carpeta de logs"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+
+	#Chequea que existan todos los archivos maestros
+	if ! [ -f $archivoCumae ];then
+		estado_sistema=1
+		echo "No existe el archivo maestro Cumae"
+		#Escribimos log
+		mensajeLog="No existe el archivo maestro Cumae"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+	if ! [ -f $archivoBamae ];then
+		estado_sistema=1
+		echo "No existe el archivo maestro Bamae"
+		#Escribimos log
+		mensajeLog="No existe el archivo maestro Bamae"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+	if ! [ -f $archivoTarjetas ];then
+		estado_sistema=1
+		echo "No existe el archivo maestro tx_Tarjetas"
+		#Escribimos log
+		mensajeLog="No existe el archivo maestro tx_Tarjetas"
+		escribirLog "ERROR" "$mensajeLog"
+		return $estado_sistema
+	fi
+	
+	
+	#chequea que exista el ejecutable de LISTADOR
+	if ! [ -f $EJECUTABLES/listador.pl ];then
+		estado_sistema=1
+		echo "No existe el ejecutable Listador.pl"
+		#Escribimos log
+		mensajeLog="No existe el ejecutable Listador.pl"
+		escribirLog "ERROR" "$mensajeLog"
+		rm -r bin
+		rm -r $(pwd)/maestros
+		return $estado_sistema
+	fi
+
+return $estado_sistema
+
+}
+
 function escribirLog(){
 	fecha=`date +%Y%m%d" "%H:%M:%S`
 	usuario=$USER
@@ -207,12 +303,13 @@ function validarRegistro(){
 	fi
 	#valido DNI y Denominacion
 	cantDeCaractDNI=$(echo $regDNI | wc -c)
-	cantDeCaractDenominacion=$(echo $regDenominacion | wc -c)
 	if [ "$cantDeCaractDNI" == "1" ]; then	
 		motivo="Documento de tarjeta no informado"	
 		return 0
 	fi
-	if [ "$cantDeCaractDenomiacion" == "1" ]; then
+	cantDeCaractDenominacion=$(echo $regDenominacion | wc -c)
+	echo $cantDeCaractDenominacion
+	if [ "$cantDeCaractDenominacion" == "1" ]; then
 		motivo="Denominacion de la tarjea no informada"	
 		return 0
 	fi
@@ -261,10 +358,12 @@ function validarRegistro(){
 	
 numeroDeSecuencia(){
 #Guarda en la variable "nroSec" el siguiente numero de secuencia del archivo pasado por parametro y lo actualiza
+	
 	if [ -f "$1" ]; then
 		ultimoNroSec=$(cut -d '#' -f2 "$1")	
 		nroSec=$(($ultimoNroSec+1))
-		sed s/"$ultimoNroSec"/"$nroSec"/ "$1" > "$1"	
+		> "$1"
+		echo "#$nroSec" >> "$1"
 	
 	else
 		nroSec="1"
@@ -273,129 +372,141 @@ numeroDeSecuencia(){
 	
 }	
 
-#creo el directorio de secuencia dentro de la carpeta de validados
-existeOcrearDirectorio "$valid/secuencia"
-cuentas=$(cut -d ';' -f 2 $archivoCumae)
-
-archEmitidosCreado=0
-
-for archivo in $archivosAceptados
-do
-	#Me fijo si existe el directorio de "Procesados", si no existe lo creo
-        existeOcrearDirectorio $proc
-	#Me fijo si el archivo esta en el directorio de "Procesados
-        if [ -f "$proc/$archivo" ]; then
-		#ARCHIVO YA PROCESADO
-		#Movemos el archivo a la carpeta de rechazados
-                #chequeo que no haya un archivo de igual nombre en la carpeta de rechazados
-                if [ -f "$recha/$archivo" ]; then
-			#NOMBRE DE ARCHIVO EXISTE EN RECHAZADOS
-                        #Me fijo si existe el directorio de "dup", si no existe lo creo
-                        existeOcrearDirectorio $dupli
-			#Le agrego el numero de secuencia al nombre del archivo y lo muevo a /dup
-			nroSec="1"
-			numeroDeSecuencia $archivoSecDuplicados
-			mv "$acept/$archivo" "$dupli/$archivo($nroSec)"
-                      
-                else
-			#NOMBRE DE ARCHIVO NO EXISTE EN RECHAZADOS
-			#Muevo el archivo al directorio de Rechazados                       
-			mv "$acept/$archivo" $recha
-                fi
-		#Escribimos log
-		mensajeLog="Archivo rechazado <$archivo> Archivo ya procesado"
-		escribirLog "ERROR" "$mensajeLog"
-		
-        else
-		#ARCHIVO A PROCESAR
-		#Proceso todos los registros del archivo
-		numReg=0
-		numRegInvalido=0
-		numRegValido=0
-		while read registro
-		do
-			numReg=$(($numReg+1))
-			validarRegistro "$registro"
-			if [ $? -eq 0 ]; then
-				#REGISTRO INVALIDO
-				numRegInvalido=$(($numRegInvalido+1))
-				#Me fijo que el archivo de Plasticos Rechazados este creado, si no lo creo
-				if [ ! -f $archivoRechazados ]; then
-					echo "FUENTE;MOTIVO DEL RECHAZO;NRO CUENTA;DOCUMENTO TARJETA;DENOMINACION DE TARJETA;T1;T2;T3;T4;FECHA DESDE;FECHA HASTA" >> $archivoRechazados
-				fi
-				#Creo registro de salida
-				registroSalida="$archivo;$motivo;$registro"
-				#Agrego el registro al archivo de Plasticos Rechazados
-				echo $registroSalida >> $archivoRechazados
-				#Escribimos log
-				mensajeLog="Archivo procesado <$archivo> registro N$numReg: Error! $motivo"
-				escribirLog "ERROR" "$mensajeLog"
-
-			else
-				#REGISTRO VALIDO
-				numRegValido=$(($numRegValido+1))
-				#Me fijo que el archivo de Plasticos Emitidos este creado, si no lo creo
-				if [ $archEmitidosCreado -eq 0 ];then
-					nroSec="1"
-					numeroDeSecuencia $archivoSecEmitidos
-					archivoEmitidos="Plasticos_emitidos_$nroSec.txt"
-					archEmitidosCreado=1
-				fi
-
-				#Creo registro de salida
-				regCuenta=$(echo "$registro" | cut -d ';' -f1)
-				regDNI=$(echo "$registro" |cut -d ';' -f2)
-				regDenominacion=$(echo "$registro" |cut -d ';' -f3)
-				regT1=$(echo "$registro" |cut -d ';' -f4)
-				regT2=$(echo "$registro" |cut -d ';' -f5)
-				regT3=$(echo "$registro" |cut -d ';' -f6)
-				regT4=$(echo "$registro" |cut -d ';' -f7)
-				regFechaDesde=$(echo "$registro" |cut -d ';' -f8)
-				regFechaHasta=$(echo "$registro" |cut -d ';' -f9)
-				
-				
-				registroSalida=""
-				agregarFlagsTarjetaVieja 
-				registroSalida="$registroSalida;;;VALIDADOR;$regDNI;$regDenominacion;$regT1;$regT2;$regT3;$regT4;$regFechaDesde;$regFechaHasta"
-				agregarCamposCumaeRegistroSalida
-				registroSalida="$archivo;$regCuenta;$registroSalida"
-
-				entidadBancaria=$( echo "$archivo" |cut -d '_' -f1)
-				registroSalida="$registroSalida;$entidadBancaria"
-				agregarAliasEntidadBancaria
-
-				#Agrego registro de salida al archivo Plasticos emitidos
-				echo $registroSalida >> "$valid/$archivoEmitidos"
-				#Escribimos log
-				mensajeLog="Archivo procesado <$archivo> registro N$numReg: Aceptado"
-				escribirLog "INF" "$mensajeLog"
-				
-							
-			fi
-					
-		done < $acept/$archivo
-		#Muevo el archivo al directorio de Procesados
-               mv "$acept/$archivo" $proc
-
-		#Escribimos log
-		mensajeLog="Archivo procesado <$archivo> Total de registros leidos: $numReg"
-		escribirLog "INF" "$mensajeLog"
-		mensajeLog="Archivo procesado <$archivo> Total de registros aceptados: $numRegValido"
-		escribirLog "INF" "$mensajeLog"
-		mensajeLog="Archivo procesado <$archivo> Total de registros rechazados: $numRegInvalido"
-		escribirLog "INF" "$mensajeLog"
-	
-        fi
-
-done
-
-if [ $archEmitidosCreado -gt 0 ];then
+#Escribimos log
+mensajeLog="Iniciando validador"
+escribirLog "INF" "$mensajeLog"
+echo "$mensajeLog..."
+#Me fijo que este el sistema bien inicializado
+status_Installation
+if [ $? -eq 1 ]; then
 	#Escribimos log
-	mensajeLog="Invocar a LISTADOR"
-	escribirLog "INF" "$mensajeLog"	
-	perl $EJECUTABLES/listador.pl -a
+	mensajeLog="Validador CANCELADO"
+	escribirLog "ERROR" "$mensajeLog"
+	echo $mensajeLog
+else
+
+	#creo el directorio de secuencia dentro de la carpeta de validados
+	existeOcrearDirectorio "$valid/secuencia"
+	cuentas=$(cut -d ';' -f 2 $archivoCumae)
+
+	archEmitidosCreado=0
+
+	for archivo in $archivosAceptados
+	do
+		#Me fijo si existe el directorio de "Procesados", si no existe lo creo
+       	 	existeOcrearDirectorio $proc
+		#Me fijo si el archivo esta en el directorio de "Procesados
+        	if [ -f "$proc/$archivo" ]; then
+			#ARCHIVO YA PROCESADO
+			#Movemos el archivo a la carpeta de rechazados
+               		#chequeo que no haya un archivo de igual nombre en la carpeta de rechazados
+                	if [ -f "$recha/$archivo" ]; then
+				#NOMBRE DE ARCHIVO EXISTE EN RECHAZADOS
+                        	#Me fijo si existe el directorio de "dup", si no existe lo creo
+                        	existeOcrearDirectorio $dupli
+				#Le agrego el numero de secuencia al nombre del archivo y lo muevo a /dup
+				nroSec="1"
+				numeroDeSecuencia $archivoSecDuplicados
+				mv "$acept/$archivo" "$dupli/$archivo($nroSec)"
+                      
+                	else
+				#NOMBRE DE ARCHIVO NO EXISTE EN RECHAZADOS
+				#Muevo el archivo al directorio de Rechazados                       
+				mv "$acept/$archivo" $recha
+               	 	fi
+			#Escribimos log
+			mensajeLog="Archivo rechazado <$archivo> Archivo ya procesado"
+			escribirLog "ERROR" "$mensajeLog"
+		
+        	else
+			#ARCHIVO A PROCESAR
+			#Proceso todos los registros del archivo
+			numReg=0
+			numRegInvalido=0
+			numRegValido=0
+			while read registro
+			do
+				numReg=$(($numReg+1))
+				validarRegistro "$registro"
+				if [ $? -eq 0 ]; then
+					#REGISTRO INVALIDO
+					numRegInvalido=$(($numRegInvalido+1))
+					#Me fijo que el archivo de Plasticos Rechazados este creado, si no lo creo
+					if [ ! -f $archivoRechazados ]; then
+						echo "FUENTE;MOTIVO DEL RECHAZO;NRO CUENTA;DOCUMENTO TARJETA;DENOMINACION DE TARJETA;T1;T2;T3;T4;FECHA DESDE;FECHA HASTA" >> $archivoRechazados
+					fi
+					#Creo registro de salida
+					registroSalida="$archivo;$motivo;$registro"
+					#Agrego el registro al archivo de Plasticos Rechazados
+					echo $registroSalida >> $archivoRechazados
+					#Escribimos log
+					mensajeLog="Archivo procesado <$archivo> registro N$numReg: Error! $motivo"
+					escribirLog "ERROR" "$mensajeLog"
+
+				else
+					#REGISTRO VALIDO
+					numRegValido=$(($numRegValido+1))
+					#Me fijo que el archivo de Plasticos Emitidos este creado, si no lo creo
+					if [ $archEmitidosCreado -eq 0 ];then
+						nroSec="1"
+						numeroDeSecuencia $archivoSecEmitidos
+						archivoEmitidos="Plasticos_emitidos_$nroSec.txt"
+						archEmitidosCreado=1
+					fi
+
+					#Creo registro de salida
+					regCuenta=$(echo "$registro" | cut -d ';' -f1)
+					regDNI=$(echo "$registro" |cut -d ';' -f2)
+					regDenominacion=$(echo "$registro" |cut -d ';' -f3)
+					regT1=$(echo "$registro" |cut -d ';' -f4)
+					regT2=$(echo "$registro" |cut -d ';' -f5)
+					regT3=$(echo "$registro" |cut -d ';' -f6)
+					regT4=$(echo "$registro" |cut -d ';' -f7)
+					regFechaDesde=$(echo "$registro" |cut -d ';' -f8)
+					regFechaHasta=$(echo "$registro" |cut -d ';' -f9)
+				
+				
+					registroSalida=""
+					agregarFlagsTarjetaVieja 
+					registroSalida="$registroSalida;;;VALIDADOR;$regDNI;$regDenominacion;$regT1;$regT2;$regT3;$regT4;$regFechaDesde;$regFechaHasta"
+					agregarCamposCumaeRegistroSalida
+					registroSalida="$archivo;$regCuenta;$registroSalida"
+
+					entidadBancaria=$( echo "$archivo" |cut -d '_' -f1)
+					registroSalida="$registroSalida;$entidadBancaria"
+					agregarAliasEntidadBancaria
+
+					#Agrego registro de salida al archivo Plasticos emitidos
+					echo $registroSalida >> "$valid/$archivoEmitidos"
+					#Escribimos log
+					mensajeLog="Archivo procesado <$archivo> registro N$numReg: Aceptado"
+					escribirLog "INF" "$mensajeLog"
+				fi
+					
+			done < $acept/$archivo
+			#Muevo el archivo al directorio de Procesados
+               		mv "$acept/$archivo" $proc
+
+			#Escribimos log
+			mensajeLog="Archivo procesado <$archivo> Total de registros leidos: $numReg"
+			escribirLog "INF" "$mensajeLog"
+			mensajeLog="Archivo procesado <$archivo> Total de registros aceptados: $numRegValido"
+			escribirLog "INF" "$mensajeLog"
+			mensajeLog="Archivo procesado <$archivo> Total de registros rechazados: $numRegInvalido"
+			escribirLog "INF" "$mensajeLog"
+	
+        	fi
+
+	done
+	echo "Validador FINALIZADO"
+	echo "Invocando a LISTADOR..."
+	if [ $archEmitidosCreado -gt 0 ];then
+		#Escribimos log
+		mensajeLog="Invocar a LISTADOR"
+		escribirLog "INF" "$mensajeLog"	
+		perl $EJECUTABLES/listador.pl -a
+	fi
+
 fi
-
-
 
 
