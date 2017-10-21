@@ -1,7 +1,7 @@
 package Listador_Automatico;
 use Listador;
-
-
+use Time::Piece;
+use Time::Seconds;
 
 $directorio_validados=$ENV{'VALIDADOS'}."/";
 $directorio_reportes=$ENV{'REPORTES'}."/";

@@ -1,3 +1,4 @@
+
 #!/usr/bin/perl -X
 package Listador_Manual;
 use Listador;
@@ -169,7 +170,7 @@ sub listado_situcion_tarjeta {
 	printf REPORTE "LISTADO SITUACION DE TARJETA:\n\n";
 	foreach $dir (@directorios){
 		$reporte = "";
-		open (OUTPUT, '-|',"situacion_tarjeta.sh", ($dir,$documento_tarjeta));
+		open (OUTPUT, '-|',"./situacion_tarjeta.sh", ($dir,$documento_tarjeta));
 	    while (<OUTPUT>) {$reporte = $reporte . $_;}
 		if ($reporte){
 			print "\nEn el archivo: " . $dir . "\n" . $reporte;
@@ -196,7 +197,7 @@ sub listado_situcion_cuenta {
 	printf REPORTE "LISTADO SITUACION DE CUENTA:\n\n";
 	foreach $dir (@directorios){
 		$reporte = "";
-		open (OUTPUT, '-|',"situacion_cuenta.sh", ($dir,$documento_cuenta));
+		open (OUTPUT, '-|',"./situacion_cuenta.sh", ($dir,$documento_cuenta));
 	    while (<OUTPUT>) {$reporte = $reporte . $_;}
 		if ($reporte){
 			print "\nEn el archivo: " . $dir . "\n" . $reporte;
