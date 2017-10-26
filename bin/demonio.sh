@@ -49,27 +49,27 @@ getFile()
 
 verifyFormatNameFile()
 {
-	VERIFIED="$(echo $FILE | sed "/[\/ ][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].txt/c\true")"
-	if [ $VERIFIED != "true" ]; then
+	VERIFIED="$(echo "$FILE" | sed "/[\/ ][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].txt/c\true")"
+	if [ "$VERIFIED" != "true" ]; then
 		VERIFIED="false"
 	fi
 }
 
 verifyFormatDate()
 {
-	VERIFIED="$(echo $FILE | sed -r "/[\/ ][0-9][0-9][0-9]_([0][0][0][1-9]|[0][0][1-9][0-9]|[0][1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])((01|03|05|07|08|10|12)([0][1-9]|[12][0-9]|[3][01])|(04|06|09|11)([0][1-9]|[12][0-9]|[3][0])|02([0][1-9]|[12][0-9])).txt/c\true")"
-	if [ $VERIFIED != "true" ]; then
+	VERIFIED="$(echo "$FILE" | sed -r "/[\/ ][0-9][0-9][0-9]_([0][0][0][1-9]|[0][0][1-9][0-9]|[0][1-9][0-9][0-9]|[1-9][0-9][0-9][0-9])((01|03|05|07|08|10|12)([0][1-9]|[12][0-9]|[3][01])|(04|06|09|11)([0][1-9]|[12][0-9]|[3][0])|02([0][1-9]|[12][0-9])).txt/c\true")"
+	if [ "$VERIFIED" != "true" ]; then
 		VERIFIED="false"
 	fi
 }
 
 verifyDateAgainstCurrentDate()
 {
-	DATE="$(echo -n $FILE | tail -c -12 | cut -c-8)"
+	DATE="$(echo -n "$FILE" | tail -c -12 | cut -c-8)"
 	CURRENTDATE="$(date "+%Y%m%d")"
 	RESULT="$(echo "$DATE <= $CURRENTDATE" | bc)"
 
-	if [ $RESULT = 1 ]; then
+	if [ "$RESULT" = 1 ]; then
 		VERIFIED="true"
 	else
 		VERIFIED="false"
@@ -78,7 +78,7 @@ verifyDateAgainstCurrentDate()
 
 verifyEmptyFile()
 {
-	if [ -s $FILE ]; then
+	if [ -s "$FILE" ]; then
 		VERIFIED="true"
 	else
 		VERIFIED="false"
@@ -87,8 +87,8 @@ verifyEmptyFile()
 
 verifyRegularFile()
 {
-	typeFile="$(file -i $FILE | cut -d' ' -f2)"
-	if [ $typeFile = "text/plain;" ]; then
+	typeFile="$(file -i "$FILE" | cut -d' ' -f2)"
+	if [ "$typeFile" = "text/plain;" ]; then
 		VERIFIED="true"
 	else
 		VERIFIED="false"
@@ -97,7 +97,7 @@ verifyRegularFile()
 
 verifyEntityExistsInMaster()
 {
-	ENTITY="$(echo -n $FILE | tail -c -16 | cut -c-3)"
+	ENTITY="$(echo -n "$FILE" | tail -c -16 | cut -c-3)"
 	RESULT="$(echo $BANKENTITIES | grep $ENTITY)"
 	if [ "$RESULT" != "" ]; then
 		VERIFIED="true"
@@ -134,30 +134,30 @@ getDuplicateSequence()
 rejectFile()
 {
 	writeLog "INFO" "Novedad rechazada <$FILE>: $1"
-	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
+	NAMEFILE="$(echo "$FILE" | rev | cut -d'/' -f1 | rev )"
 	if [ -e "$RECHAZADOS/$NAMEFILE" ]; then
 		if [ ! -d "$RECHAZADOS/dup" ]; then
 			mkdir "$RECHAZADOS/dup"
 		fi
 		getDuplicateSequence "files_rejected"
-		mv $FILE "$RECHAZADOS/dup/$NAMEFILE.$SEQUENCEDUP"
+		mv "$FILE" "$RECHAZADOS/dup/$NAMEFILE.$SEQUENCEDUP"
 	else
-		mv $FILE $RECHAZADOS
+		mv "$FILE" "$RECHAZADOS"
 	fi
 }
 
 acceptFile()
 {
 	writeLog "INFO" "Novedad aceptada <$FILE>"
-	NAMEFILE="$(echo $FILE | rev | cut -d'/' -f1 | rev )"
+	NAMEFILE="$(echo "$FILE" | rev | cut -d'/' -f1 | rev )"
 	if [ -e "$ACEPTADOS/$NAMEFILE" ]; then
 		if [ ! -d "$ACEPTADOS/dup" ]; then
 			mkdir "$ACEPTADOS/dup"
 		fi
 		getDuplicateSequence "files_accepted"
-		mv $FILE "$ACEPTADOS/dup/$NAMEFILE.$SEQUENCEDUP"
+		mv "$FILE" "$ACEPTADOS/dup/$NAMEFILE.$SEQUENCEDUP"
 	else
-		mv $FILE $ACEPTADOS
+		mv "$FILE" "$ACEPTADOS"
 	fi
 }
 
@@ -168,27 +168,27 @@ while [ "$STOP" = "false" ]; do
 	getFile
 	while [ "$FILE" != "" ]; do
 		verifyFormatNameFile
-		if [ $VERIFIED = "false" ]; then
+		if [ "$VERIFIED" = "false" ]; then
 			rejectFile "Nombre de archivo invalido"
 		else
 			verifyFormatDate
-			if [ $VERIFIED = "false" ]; then
+			if [ "$VERIFIED" = "false" ]; then
 				rejectFile "Fecha invalida"
 			else
 				verifyDateAgainstCurrentDate
-				if [ $VERIFIED = "false" ]; then
+				if [ "$VERIFIED" = "false" ]; then
 					rejectFile "Fecha adelantada"
 				else
 					verifyEntityExistsInMaster
-					if [ $VERIFIED = "false" ]; then
+					if [ "$VERIFIED" = "false" ]; then
 						rejectFile "Entidad inexistente"
 					else
 						verifyEmptyFile
-						if [ $VERIFIED = "false" ]; then
+						if [ "$VERIFIED" = "false" ]; then
 							rejectFile "Archivo vacio"
 						else
 							verifyRegularFile
-							if [ $VERIFIED = "false" ]; then
+							if [ "$VERIFIED" = "false" ]; then
 								rejectFile "Tipo de archivo invalido"
 							else
 								acceptFile
