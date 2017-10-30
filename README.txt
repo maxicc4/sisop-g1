@@ -79,7 +79,7 @@ cd grupo01/ejecutables
 ```
 Este comando inicializará el sistema y dejará corriendo al demonio.
 
-Luego el sistema pedirá el ingreso de un directorio donde irá leyendo los archivos a procesar (ingresar ruta completa).
+Luego el sistema pedirá el ingreso de un directorio donde irá leyendo los archivos a procesar (ingresar ruta completa, como por ej: /home/user/dirabus).
 
 ### Detener demonio
 
