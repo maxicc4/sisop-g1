@@ -339,9 +339,7 @@ if [ $? -eq 1 ]; then
 else
 	echo "Sistema inicializado correctamete."
 	echo "Validando datos..."
-	
-	#creo el directorio de secuencia dentro de la carpeta de validados
-	existeOcrearDirectorio "$valid/secuencia"
+
 	cuentas=$(cut -d ';' -f 2 $archivoCumae)
 
 	archEmitidosCreado=0
