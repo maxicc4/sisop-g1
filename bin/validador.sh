@@ -320,10 +320,7 @@ numeroDeSecuencia(){
 	sh "$EJECUTABLES/getSecuenciaDuplicados.sh" $1
 	nroSec=$?
 	
-}
-
-
-	
+}	
 
 #Escribimos log
 mensajeLog="Iniciando validador"
@@ -339,6 +336,7 @@ if [ $? -eq 1 ]; then
 else
 	echo "Sistema inicializado correctamete."
 	echo "Validando datos..."
+	
 
 	cuentas=$(cut -d ';' -f 2 $archivoCumae)
 
