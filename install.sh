@@ -12,6 +12,14 @@ DIR_CONFIG="dirconf"
 variable=$(pwd)
 export DIR_INSTALACION="$variable/grupo01"
 
+TEMP_EJECUTABLES=''
+TEMP_MAESTROS=''
+TEMP_ACEPTADOS=''
+TEMP_RECHAZADOS=''
+TEMP_VALIDADOS=''
+TEMP_REPORTES=''
+TEMP_LOG=''
+
 #########################
 
 
@@ -27,6 +35,17 @@ echo "$(date +"%D %X")-$1-$2-$3-$4">>$DIR_INSTALACION/$DIR_CONFIG/Instalacion.lo
 #loguear WHO WHERE WHAT WHY
 #ie 
 #loguear "Nahuel" "loguear" "no grabó" "no encontró el directorio"
+}
+
+#Cargo o guardo el directorio de instalacion
+guardoOCargoDirInstalacion(){
+if [ -f "$1/directorioInstalacion.txt" ]; then
+		DIR_INSTALACION=$(cut -d ':' -f2 "$1/directorioInstalacion.txt")	
+		export DIR_INSTALACION
+	
+else
+		echo "Directorio de instalacion:$DIR_INSTALACION" >> "$1/directorioInstalacion.txt"
+fi
 }
 
 createConfigFile(){
@@ -59,6 +78,7 @@ loguear $USER "createConfigFile:" "SE CREA EL ARCHIVO CONFIG" "OK"
 makeDirectories(){
 loguear $USER "makeDirectories:" "CREANDO CARPETA EJECUTALES $DIR_EJECUTABLES" "OK"
 mkdir -p $DIR_INSTALACION/$DIR_EJECUTABLES
+guardoOCargoDirInstalacion "$DIR_INSTALACION/$DIR_EJECUTABLES"
 loguear $USER "makeDirectories:" "CREANDO CARPETA MAESTROS $DIR_MAESTROS" "OK"
 mkdir -p $DIR_INSTALACION/$DIR_MAESTROS
 loguear $USER "makeDirectories:" "CREANDO CARPETA ACEPTADOS $DIR_ACEPTADOS" "OK"
@@ -227,7 +247,7 @@ fi
 }
 
 caracteresValidos(){
-if [[ $1 == *[-'!'@#\$%^\&*()_+]* ]];then
+if [[ $1 == *[-'!'''@#\$%^\&*()_+]* ]];then
   return 0
 else 
   return 1
@@ -242,7 +262,7 @@ loguear $USER "directories:" "INGRESO DE NOMBRES DE DIRECTORIOS" "INICIO"
 #echo "tipo de instalacion $INSTALACION_RAPIDA"
 
 #-----------
-echo "Ingrese ruta de directorio para los archivos EJECUTABLES"
+echo "Ingrese nombre de directorio para los archivos EJECUTABLES"
 echo "Presione 'Enter' para ruta default ($DIR_INSTALACION/$DIR_EJECUTABLES)"
 echo "==================================================================="
 loguear $USER "SISTEMA:" "Ingrese ruta de directorio para los archivos EJECUTABLES" "PANTALLA"
@@ -279,11 +299,16 @@ done
 loguear $USER "USER:" "INGRESADO: $READEJECUTABLE" "PANTALLA"
 done 
 DIR_EJECUTABLES=$READEJECUTABLE
+TEMP_EJECUTABLES=$READEJECUTABLE
 loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA EJECUTABLE:: $READEJECUTABLE" "OK"
-
+else
+TEMP_EJECUTABLES=$DIR_EJECUTABLES
 fi
+echo "Nombre elegido : $TEMP_EJECUTABLES "
+echo ""
+
 #-----------
-echo "Ingrese ruta de directorio para los archivos MAESTROS"
+echo "Ingrese nombre de directorio para los archivos MAESTROS"
 echo "Presione 'Enter' para ruta default ($DIR_INSTALACION/$DIR_MAESTROS)"
 echo "==================================================================="
 loguear $USER "SISTEMA:" "Ingrese ruta de directorio para los archivos MAESTROS" "PANTALLA"
@@ -305,10 +330,11 @@ if [ "$READMAESTRO" != "" ]; then
 while checkNameDirectories $READMAESTRO
 do
 loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
-echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default $DIR_MAESTROS"
 
 read in_maestros
 READMAESTRO=$in_maestros
+
 while caracteresValidos $READMAESTRO
 do
 echo "caratecteres invalidos ; no puede ingresar los sig caratecteres : -'!'@#\$%^\&*()_+ "
@@ -317,16 +343,35 @@ read in_maestros
 READMAESTRO=$in_maestros
 done
 
+
 loguear $USER "USER:" "INGRESADO: $READMAESTRO" "PANTALLA"
 
 done
 DIR_MAESTROS=$READMAESTRO
+TEMP_MAESTROS=$READMAESTRO
+loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA MAESTRO: $READMAESTRO" "OK"
+
+else
+dir_default=$DIR_MAESTROS	
+while checkNameDirectories $dir_default
+do
+loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_MAESTROS"
+
+read in_maestros
+dir_default=$in_maestros
+done
+DIR_MAESTROS=$dir_default
+TEMP_MAESTROS=$DIR_MAESTROS
+
 loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA MAESTRO: $READMAESTRO" "OK"
 
 fi
 
+echo "nombre elegido : $TEMP_MAESTROS"
+echo ""
 #--------------------------------
-echo "Ingrese ruta de directorio para los archivos ACEPTADOS"
+echo "Ingrese nombre de directorio para los archivos ACEPTADOS"
 echo "Presione 'Enter' para ruta default ($DIR_INSTALACION/$DIR_ACEPTADOS)"
 echo "==================================================================="
 loguear $USER "SISTEMA:" "Ingrese ruta de directorio para los archivos ACEPTADOS" "PANTALLA"
@@ -346,7 +391,7 @@ loguear $USER "USER:" "INGRESADO: $READACEPTADOS" "PANTALLA"
 if [ "$READACEPTADOS" != "" ]; then
 while checkNameDirectories $READACEPTADOS 
 do
-echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_ACEPTADOS"
 loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
 
 read in_aceptados
@@ -362,12 +407,31 @@ done
 loguear $USER "USER:" "INGRESADO: $READACEPTADOS" "PANTALLA"
 done
 DIR_ACEPTADOS=$READACEPTADOS
+TEMP_ACEPTADOS=$READACEPTADOS
 loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA ACEPTADOS: $READACEPTADOS" "OK"
+
+else
+dir_default=$DIR_ACEPTADOS	
+
+while checkNameDirectories $dir_default
+do
+loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_ACEPTADOS"
+
+read in_maestros
+dir_default=$in_maestros
+done
+$DIR_ACEPTADOS=$dir_default
+TEMP_ACEPTADOS=$DIR_ACEPTADOS
+
+
 fi
+echo "nombre elegido : $TEMP_ACEPTADOS"
+echo ""
 
 
-#----------------------------
-echo "Ingrese ruta de directorio para los archivos RECHAZADOS"
+
+echo "Ingrese nombre de directorio para los archivos RECHAZADOS"
 echo "Presione 'Enter' para ruta default ($DIR_INSTALACION/$DIR_RECHAZADOS)"
 echo "==================================================================="
 loguear $USER "SISTEMA:" "Ingrese ruta de directorio para los archivos RECHAZADOS" "PANTALLA"
@@ -389,7 +453,7 @@ if [ "$READRECHAZADO" != "" ]; then
 while checkNameDirectories $READRECHAZADO
 do
 loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
-echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_RECHAZADOS"
 read in_rechazados
 READRECHAZADO=$in_rechazados
 while caracteresValidos $READRECHAZADO
@@ -404,13 +468,30 @@ loguear $USER "USER:" "INGRESADO: $READRECHAZADO" "PANTALLA"
 
 done
 DIR_RECHAZADOS=$READRECHAZADO
+TEMP_RECHAZADOS=$READRECHAZADO
 loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA RECHAZADO: $READRECHAZADO" "OK"
+else
+dir_default=$DIR_RECHAZADOS	
+
+while checkNameDirectories $dir_default
+do
+loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_RECHAZADOS"
+
+read in_maestros
+dir_default=$in_maestros
+done
+$DIR_RECHAZADOS=$dir_default
+TEMP_RECHAZADOS=$DIR_RECHAZADOS
+
 
 fi
+echo "nombre elegido : $TEMP_RECHAZADOS"
+echo ""
 
 
 #-----------------------
-echo "Ingrese ruta de directorio para los archivos VALIDADOS"
+echo "Ingrese nombre de directorio para los archivos VALIDADOS"
 echo "Presione 'Enter' para ruta default ($DIR_INSTALACION/$DIR_VALIDADOS)"
 echo "==================================================================="
 loguear $USER "SISTEMA:" "Ingrese ruta de directorio para los archivos VALIDADOS" "PANTALLA"
@@ -433,7 +514,7 @@ if [ "$READVALIDADOS" != "" ]; then
 while checkNameDirectories $READVALIDADOS
 do
 loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
-echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_VALIDADOS"
 read in_validados
 READVALIDADOS=$in_validados
 while caracteresValidos $READVALIDADOS
@@ -447,13 +528,28 @@ loguear $USER "USER:" "INGRESADO: $READVALIDADOS" "PANTALLA"
 
 done
 DIR_VALIDADOS=$READVALIDADOS
+TEMP_VALIDADOS=$READVALIDADOS
 loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA READVALIDADOS: $READVALIDADOS" "OK"
+else
+dir_default=$DIR_VALIDADOS
+while checkNameDirectories $dir_default
+do
+loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_VALIDADOS"
+
+read in_maestros
+dir_default=$in_maestros
+done
+DIR_VALIDADOS=$dir_default
+TEMP_VALIDADOS=$DIR_VALIDADOS
 
 fi
+echo "nombre elegido : $TEMP_VALIDADOS"
+echo ""
 
 
 #----------------------
-echo "Ingrese ruta de directorio para los archivos de REPORTES"
+echo "Ingrese nombre de directorio para los archivos de REPORTES"
 echo "Presione 'Enter' para ruta default ($DIR_INSTALACION/$DIR_REPORTES)"
 echo "==================================================================="
 loguear $USER "SISTEMA:" "Ingrese ruta de directorio para los archivos REPORTES" "PANTALLA"
@@ -475,7 +571,7 @@ if [ "$READREPORTES" != "" ]; then
 while checkNameDirectories $READREPORTES
 do
 loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
-echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_REPORTES"
 
 read in_reportes
 READREPORTES=$in_reportes
@@ -491,11 +587,28 @@ loguear $USER "USER:" "INGRESADO: $READREPORTES" "PANTALLA"
 
 done
 DIR_REPORTES=$READREPORTES
+TEMP_REPORTES=$READREPORTES
 loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA REPORTES: $READREPORTES" "OK"
+else
+
+dir_default=$DIR_REPORTES
+while checkNameDirectories $dir_default
+do
+loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_REPORTES "
+
+read in_maestros
+dir_default=$in_maestros
+done
+DIR_REPORTES=$dir_default
+TEMP_REPORTES=$DIR_REPORTES
+
 fi
+echo "nombre elegido : $TEMP_REPORTES"
+echo ""
 
 #-------------------------
-echo "Ingrese ruta de directorio para los archivos de LOG"
+echo "Ingrese nombre de directorio para los archivos de LOG"
 echo "Presione 'Enter' para ruta default ($DIR_INSTALACION/$DIR_LOG)"
 echo "==================================================================="
 loguear $USER "SISTEMA:" "Ingrese ruta de directorio para los archivos LOG" "PANTALLA"
@@ -516,7 +629,7 @@ loguear $USER "USER:" "INGRESADO: $READLOG" "PANTALLA"
 if [ "$READLOG" != "" ]; then
 while checkNameDirectories $READLOG
 do
-echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default : $DIR_LOG"
 
 read in_log
 READLOG=$in_log
@@ -532,9 +645,26 @@ loguear $USER "USER:" "INGRESADO: $READLOG" "PANTALLA"
 
 done
 DIR_LOG=$READLOG
+TEMP_LOG=$READLOG
 loguear $USER "directories:" "DIRECTORIO ELEGIDO PARA LOG: $READLOG" "OK"
+else
+dir_default=$DIR_LOG	
+while checkNameDirectories $dir_default
+do
+loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
+echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio- Default : $DIR_LOG" 
+ 
+read in_maestros
+dir_default=$in_maestros
+done
+DIR_LOG=$dir_default
+TEMP_LOG=$DIR_LOG
+
 
 fi
+echo "nombre elegido : $TEMP_LOG"
+echo " "
+
 clear
 }
 
@@ -634,6 +764,7 @@ showDirectories
 loguear $USER "setup:" "Confirmar estructura de directorios (y/n)" "PANTALLA"
 echo "Confirmar estructura de directorios (y/n)"
 
+
 read confirmar
 valido=$confirmar
 
@@ -657,6 +788,8 @@ done
 	extrayendoMaestros $DIR_INSTALACION/$DIR_MAESTROS
 	extrayendoBinFiles $DIR_INSTALACION/$DIR_EJECUTABLES
 #	removeInstallationFiles
+	else
+	borrarDirectorios
 	fi
 done
 echo "Creando arhivo de configuracion"
@@ -668,6 +801,17 @@ echo "Removiendo archivos de instalacion"
 barra_progreso
 }
 
+borrarDirectorios(){
+vacio=''
+TEMP_EJECUTABLES=$vacio
+TEMP_MAESTROS=$vacio
+TEMP_ACEPTADOS=$vacio
+TEMP_RECHAZADOS=$vacio
+TEMP_VALIDADOS=$vacio
+TEMP_REPORTES=$vacio
+TEMP_LOG=$vacio
+}
+
 #devuelve 0 si la carpeta existe
 existeCarpeta(){
 
@@ -677,7 +821,7 @@ existeCarpeta(){
 
 checkNameDirectories(){
 
-if [ "$1" != "$DIR_EJECUTABLES" -a "$1" != "$DIR_MAESTROS" -a "$1" != "$DIR_ACEPTADOS" -a "$1" != "$DIR_RECHAZADOS" -a "$1" != "$DIR_VALIDADOS" -a "$1" != "$DIR_REPORTES" -a "$1" != "$DIR_LOG" -a "$1" != "$DIR_CONFIG" ];then 
+if [ "$1" != "$TEMP_EJECUTABLES" -a "$1" != "$TEMP_MAESTROS" -a "$1" != "$TEMP_ACEPTADOS" -a "$1" != "$TEMP_RECHAZADOS" -a "$1" != "$TEMP_VALIDADOS" -a "$1" != "$TEMP_REPORTES" -a "$1" != "$TEMP_LOG" -a "$1" != "$DIR_CONFIG" ];then 
 return 1
 else 
 return 0
