@@ -358,7 +358,7 @@ else
 				#Le agrego el numero de secuencia al nombre del archivo y lo muevo a /dup
 				nroSec="1"
 				numeroDeSecuencia $archivoSecDuplicados
-				mv "$acept/$archivo" "$dupli/$archivo($nroSec)"
+				mv "$acept/$archivo" "$dupli/($nroSec)$archivo"
                       
                 	else
 				#NOMBRE DE ARCHIVO NO EXISTE EN RECHAZADOS
