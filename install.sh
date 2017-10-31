@@ -329,6 +329,7 @@ loguear $USER "USER:" "INGRESADO: $READMAESTRO" "PANTALLA"
 if [ "$READMAESTRO" != "" ]; then
 while checkNameDirectories $READMAESTRO
 do
+
 loguear $USER "directories:" "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio" "PANTALLA"
 echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio - Default $DIR_MAESTROS"
 
@@ -341,9 +342,12 @@ echo "caratecteres invalidos ; no puede ingresar los sig caratecteres : -'!'@#\$
 echo "ingrese nuevamente."
 read in_maestros
 READMAESTRO=$in_maestros
+
 done
 
-
+if [ "$READMAESTRO" == "" ]; then
+READMAESTRO=$DIR_MAESTROS
+fi
 loguear $USER "USER:" "INGRESADO: $READMAESTRO" "PANTALLA"
 
 done
@@ -403,7 +407,9 @@ echo "ingrese nuevamente."
 read in_aceptados
 READACEPTADOS=$in_aceptados
 done
-
+if [ "$READACEPTADOS" == "" ]; then
+READACEPTADOS=$DIR_ACEPTADOS
+fi
 loguear $USER "USER:" "INGRESADO: $READACEPTADOS" "PANTALLA"
 done
 DIR_ACEPTADOS=$READACEPTADOS
@@ -463,7 +469,9 @@ echo "ingrese nuevamente."
 read in_rechazados
 READRECHAZADO=$in_rechazados
 done
-
+if [ "$READRECHAZADO" == "" ]; then
+READRECHAZADO=$DIR_RECHAZADOS
+fi
 loguear $USER "USER:" "INGRESADO: $READRECHAZADO" "PANTALLA"
 
 done
@@ -525,7 +533,9 @@ read in_validados
 READVALIDADOS=$in_validados
 done
 loguear $USER "USER:" "INGRESADO: $READVALIDADOS" "PANTALLA"
-
+if [ "$READVALIDADOS" == "" ]; then
+READVALIDADOS=$DIR_VALIDADOS
+fi
 done
 DIR_VALIDADOS=$READVALIDADOS
 TEMP_VALIDADOS=$READVALIDADOS
@@ -584,7 +594,9 @@ READREPORTES=$in_reportes
 done
 
 loguear $USER "USER:" "INGRESADO: $READREPORTES" "PANTALLA"
-
+if [ "$READREPORTES" == "" ]; then
+READREPORTES=$DIR_REPORTES
+fi
 done
 DIR_REPORTES=$READREPORTES
 TEMP_REPORTES=$READREPORTES
@@ -641,6 +653,9 @@ read in_log
 READLOG=$in_log
 done
 
+if [ "$READLOG" == "" ]; then
+READLOG=$DIR_LOG
+fi
 loguear $USER "USER:" "INGRESADO: $READLOG" "PANTALLA"
 
 done
