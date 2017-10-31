@@ -421,7 +421,7 @@ echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio -
 read in_maestros
 dir_default=$in_maestros
 done
-$DIR_ACEPTADOS=$dir_default
+DIR_ACEPTADOS=$dir_default
 TEMP_ACEPTADOS=$DIR_ACEPTADOS
 
 
@@ -481,7 +481,7 @@ echo "El nombre elegido ya existe. Por favor ingrese otro nombre de directorio -
 read in_maestros
 dir_default=$in_maestros
 done
-$DIR_RECHAZADOS=$dir_default
+DIR_RECHAZADOS=$dir_default
 TEMP_RECHAZADOS=$DIR_RECHAZADOS
 
 
