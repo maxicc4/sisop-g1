@@ -66,9 +66,9 @@ solicitar_directorio_de_busqueda() {
 ejecutar_demonio() {
 	. demonio.sh &
 	process_id=$!
-	echo "Ejecutando el demonio..."
-	loggear "ejecutar_demonio" "INFO" "Ejecutando el demonio. Process ID: $process_id"
 
+	loggear "ejecutar_demonio" "INFO" "Ejecutando el demonio. Process ID: $process_id"
+	echo "Ejecutando el demonio. Process ID: $process_id"
 	
 	agregar_variable_de_ambiente "process_id" $process_id
 }
