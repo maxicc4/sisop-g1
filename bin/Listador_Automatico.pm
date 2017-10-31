@@ -40,7 +40,7 @@ sub automatico {
 				@reg[6] = "NO DISTRIBUIR, la cuenta es JUDICIAL";
 			}
 			elsif (@reg[5] == 1){
-				@reg[6] = "NO DISTRIBUIR, la tarjeta fue BLOQUEADA";	
+				@reg[6] = "RETENER, la tarjeta fue BLOQUEADA";	
 			}
 			elsif ($fecha_hasta <= $hoy){
 				@reg[6] = "NO DISTRIBUIR, tarjeta VENCIDA";	
